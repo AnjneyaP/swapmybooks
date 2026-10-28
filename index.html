@@ -3,122 +3,197 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Neighbourhood Book Swap</title>
+<meta name="theme-color" content="#F1EBFF" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#140A24" media="(prefers-color-scheme: dark)">
+<title>book swap</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#EEF1F4; --surface:#FFFFFF; --ink:#1B2336; --muted:#5B6478; --line:#D5DAE2;
-  --shelf:#2E3A57; --accent:#E3A51F; --accent-ink:#1B2336; --ok:#2F7D5B; --warn:#B4531B; --bad:#B42318; --field:#F7F8FA;
-  --mine:#E6EEF9;
+  --bg:#F1EBFF; --surface:#FFFFFF; --ink:#1D0F33; --muted:#5E4F7A; --edge:#1D0F33; --line:#D9CCF5;
+  --pink:#FF4F81; --sun:#FFD23F; --mint:#2FD08A; --sky:#49B6FF; --grape:#7B5CFF;
+  --on-accent:#1D0F33; --field:#F7F3FF; --bad:#D92D20; --ok:#0E8A55; --warn:#B4400F; --mine-msg:#E4DBFF;
+  --display:"Bricolage Grotesque","Arial Narrow",system-ui,sans-serif;
+  --body:"DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --bar:76px;
   box-sizing:border-box;
-  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-top:env(safe-area-inset-top,0px);
 }
 @media (prefers-color-scheme:dark){
-  :root{--bg:#141925; --surface:#1E2433; --ink:#ECEFF5; --muted:#A2AABB; --line:#323A4D;
-    --shelf:#0C1019; --accent:#F0B83A; --accent-ink:#141925; --ok:#5FC495; --warn:#F08A4E; --bad:#FF7A6E; --field:#262D3E; --mine:#2B3753;}
+  :root{--bg:#140A24; --surface:#21143A; --ink:#F4EEFF; --muted:#B9ACD6; --edge:#000000; --line:#3D2C5E;
+    --field:#2A1C47; --bad:#FF7A6E; --ok:#5CE0A4; --warn:#FFA36B; --mine-msg:#3B2A63;}
 }
 *,*::before,*::after{box-sizing:inherit}
 [hidden]{display:none!important}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif}
-h1,h2,h3{font-family:"Young Serif",Georgia,"Times New Roman",serif;font-weight:400;margin:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.55 var(--body)}
+h1,h2,h3{font-family:var(--display);margin:0;letter-spacing:-.01em}
 button,input,select,textarea{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+:focus-visible{outline:3px solid var(--grape);outline-offset:3px}
 img{max-width:100%}
 .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
 
-header.top{background:var(--shelf);color:#F4F6FA;padding:26px 0 0}
+/* ---------- Header ---------- */
+header.top{padding:22px 0 8px}
 .toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
-header.top h1{font-size:clamp(1.9rem,6vw,3rem);line-height:1.05}
-header.top p{margin:8px 0 20px;color:#C5CCDA;max-width:52ch}
-.hello{background:rgba(255,255,255,.12);border:0;color:#F4F6FA;border-radius:999px;padding:8px 14px;font-size:.9rem;white-space:nowrap}
-.shelf-edge{height:14px;background:linear-gradient(#5A4632,#3E2F21);box-shadow:0 6px 10px -6px rgba(0,0,0,.5)}
-nav.tabs{display:flex;gap:4px}
-nav.tabs button{background:transparent;border:0;color:#C5CCDA;padding:12px 16px;border-radius:12px 12px 0 0;font-weight:600;position:relative}
-nav.tabs button[aria-selected="true"]{background:var(--bg);color:var(--ink)}
-.badge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:.8rem;font-weight:700;margin-left:6px}
-.badge[hidden]{display:none}
+.wordmark{font-family:var(--display);font-weight:800;font-stretch:78%;font-size:clamp(3rem,15vw,5.6rem);line-height:.82;letter-spacing:-.04em;margin:0}
+.wordmark .sticker{display:inline-block;font-family:var(--body);font-stretch:100%;font-size:.95rem;font-weight:700;letter-spacing:0;vertical-align:top;margin:.45em 0 0 .3em;background:var(--sun);color:var(--on-accent);border:2.5px solid var(--edge);border-radius:999px;padding:3px 10px;transform:rotate(6deg)}
+.tagline{margin:14px 0 0;color:var(--muted);max-width:38ch;font-size:1.02rem}
+.hello{background:var(--surface);border:2.5px solid var(--edge);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:.9rem;font-weight:700;white-space:nowrap;box-shadow:3px 3px 0 var(--edge);max-width:46vw;overflow:hidden;text-overflow:ellipsis}
 
-main{padding:22px 0 60px}
-.notice{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);padding:12px 16px;border-radius:10px;margin-bottom:18px;color:var(--muted)}
-.alert{background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:12px 16px;margin-bottom:18px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
-.alert strong{font-size:1.02rem}
-.rule{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:.95rem}
+main{padding:14px 0 calc(var(--bar) + 40px + env(safe-area-inset-bottom,0px))}
 
+/* ---------- Bottom tab bar ---------- */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:5;display:flex;justify-content:space-around;align-items:flex-end;gap:4px;
+  background:var(--surface);border-top:2.5px solid var(--edge);padding:6px 10px calc(8px + env(safe-area-inset-bottom,0px))}
+nav.tabs button{position:relative;flex:1 1 0;max-width:120px;background:none;border:0;padding:6px 4px;border-radius:14px;color:var(--muted);font-weight:700;font-size:.8rem;display:grid;justify-items:center;gap:2px}
+nav.tabs button svg{width:26px;height:26px}
+nav.tabs button[aria-selected="true"]{color:var(--ink)}
+nav.tabs button[aria-selected="true"] svg{stroke-width:2.6}
+nav.tabs button[data-tab="add"] .fab{width:60px;height:60px;margin-top:-30px;border-radius:50%;background:var(--pink);color:var(--on-accent);border:2.5px solid var(--edge);box-shadow:3px 3px 0 var(--edge);display:grid;place-items:center}
+nav.tabs button[data-tab="add"][aria-selected="true"] .fab{background:var(--sun)}
+nav.tabs .badge{position:absolute;top:0;left:calc(50% + 6px)}
+@media (min-width:760px){nav.tabs{left:50%;right:auto;transform:translateX(-50%);bottom:16px;width:min(520px,92vw);border:2.5px solid var(--edge);border-radius:24px;box-shadow:5px 5px 0 var(--edge);padding:6px 12px 8px}}
+.badge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--pink);color:var(--on-accent);font-size:.75rem;font-weight:800;border:2px solid var(--edge)}
+
+/* ---------- Banners ---------- */
+.notice{background:var(--surface);border:2.5px dashed var(--muted);padding:10px 14px;border-radius:16px;margin-bottom:16px;color:var(--muted);font-size:.95rem}
+.alert{background:var(--sun);color:var(--on-accent);border:2.5px solid var(--edge);box-shadow:4px 4px 0 var(--edge);border-radius:18px;padding:12px 14px;margin-bottom:18px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;font-weight:700}
+
+/* ---------- How it works (a real 3-step sequence) ---------- */
+.how{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:20px;padding:0;list-style:none}
+.how li{background:var(--surface);border:2.5px solid var(--edge);border-radius:16px;padding:10px 12px;font-size:.88rem;line-height:1.35;font-weight:600}
+.how li b{display:block;font-family:var(--display);font-size:1.5rem;line-height:1;margin-bottom:4px}
+.how li:nth-child(1) b{color:var(--pink)} .how li:nth-child(2) b{color:var(--grape)} .how li:nth-child(3) b{color:var(--ok)}
+
+/* ---------- Filters ---------- */
 .controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
-.controls input,.controls select{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-height:50px}
-.controls input{flex:1 1 100%}
-.controls select{flex:1 1 150px;min-width:0}
+.controls input,.controls select{background:var(--surface);border:2.5px solid var(--edge);border-radius:999px;padding:11px 16px;min-height:50px;min-width:0;font-weight:600}
+.controls input{flex:1 1 100%;font-weight:500}
+.chips{display:flex;gap:8px;overflow-x:auto;flex:1 1 100%;padding:2px 2px 4px;margin:-2px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.controls select{flex:0 0 auto;appearance:none;-webkit-appearance:none;padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 20px) 52%,calc(100% - 14px) 52%;background-size:6px 6px;background-repeat:no-repeat}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:22px}
-.book{display:flex;flex-direction:column;background:var(--surface);border-radius:6px 14px 14px 6px;overflow:hidden;border:1px solid var(--line);scroll-margin-top:20px}
-.book.flash{outline:4px solid var(--accent);outline-offset:3px}
-.cover{position:relative;aspect-ratio:3/3.2;padding:46px 16px 16px 26px;color:#fff;display:flex;flex-direction:column;justify-content:space-between}
-.cover::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:rgba(0,0,0,.22);box-shadow:inset -2px 0 0 rgba(255,255,255,.18)}
-.cover.photo{padding:0}
-.cover.photo img{width:100%;height:100%;object-fit:cover;display:block}
-.cover .t{font-family:"Young Serif",Georgia,serif;font-size:1.3rem;line-height:1.2;overflow-wrap:anywhere}
-.cover .a{font-size:.9rem;opacity:.9}
-.tag{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.94);color:#1B2336;font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:999px}
-.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:7px;flex:1}
-.ttl{font-weight:700;line-height:1.3}
-.meta{font-size:.9rem;color:var(--muted)}
-.swapbox{font-size:.9rem;background:var(--field);border-radius:8px;padding:8px 10px}
-.status{font-size:.92rem;font-weight:700}
+/* ---------- Trading cards ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+.book{display:flex;flex-direction:column;background:var(--surface);border:2.5px solid var(--edge);border-radius:20px;overflow:hidden;box-shadow:5px 5px 0 var(--edge);scroll-margin-top:20px}
+.book.flash{outline:4px solid var(--pink);outline-offset:4px}
+.cover{position:relative;aspect-ratio:3/3.3;padding:46px 16px 16px;color:var(--on-accent);display:flex;flex-direction:column;justify-content:space-between;border-bottom:2.5px solid var(--edge);overflow:hidden}
+.cover .t{font-family:var(--display);font-weight:800;font-stretch:85%;font-size:1.5rem;line-height:1.02;overflow-wrap:anywhere}
+.cover .a{font-size:.85rem;font-weight:600;opacity:.85}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:var(--surface)}
+.tag{position:absolute;z-index:1;top:10px;right:10px;background:var(--surface);color:var(--ink);font-size:.78rem;font-weight:800;padding:3px 10px;border-radius:999px;border:2px solid var(--edge);transform:rotate(4deg)}
+.tag.keep{background:var(--mint);color:var(--on-accent)} .tag.lend{background:var(--sky);color:var(--on-accent)}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
+.ttl{font-family:var(--display);font-weight:700;font-size:1.15rem;line-height:1.2}
+.meta{font-size:.88rem;color:var(--muted)}
+.swapbox{font-size:.88rem;background:var(--field);border:2px dashed var(--line);border-radius:12px;padding:8px 10px}
+.status{font-size:.9rem;font-weight:800}
 .status.available{color:var(--ok)} .status.requested,.status.offered{color:var(--warn)} .status.out,.status.given{color:var(--muted)}
-.due{font-size:.9rem;font-weight:600;color:var(--muted)}
-.due.over{color:var(--bad)}
-.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:4px}
-.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;min-height:50px;flex:1 1 auto}
-.btn.primary{background:var(--accent);color:var(--accent-ink)}
-.btn.ghost{background:transparent;border:1.5px solid var(--line)}
-.btn.danger{background:transparent;color:var(--warn);border:1.5px solid var(--line)}
-.btn.small{min-height:44px;padding:8px 12px;font-size:.92rem;flex:0 1 auto}
+.due{font-size:.88rem;font-weight:700;color:var(--muted)} .due.over{color:var(--bad)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:6px}
+.btn{border:2.5px solid var(--edge);border-radius:14px;padding:11px 16px;font-weight:800;min-height:50px;flex:1 1 auto;background:var(--surface);color:var(--ink);box-shadow:3px 3px 0 var(--edge);transition:transform .08s,box-shadow .08s}
+.btn:active:not(:disabled){transform:translate(3px,3px);box-shadow:0 0 0 var(--edge)}
+.btn.primary{background:var(--pink);color:var(--on-accent)}
+.btn.ghost{background:var(--surface)}
+.btn.danger{background:var(--surface);color:var(--bad)}
+.btn.small{min-height:44px;padding:8px 12px;font-size:.9rem;flex:0 1 auto}
 .btn:disabled{opacity:.5;cursor:default}
+.flag{background:none;border:0;padding:6px 0 0;color:var(--muted);font-size:.85rem;text-decoration:underline;text-align:left;cursor:pointer;min-height:36px}
+.flagged{font-size:.85rem;color:var(--muted);padding-top:6px}
+.blockmsg{font-size:.88rem;font-weight:700;border-radius:12px;padding:8px 10px;background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
 
-.empty{text-align:center;padding:44px 16px;color:var(--muted);grid-column:1/-1}
-.empty h3{color:var(--ink);font-size:1.4rem;margin-bottom:6px}
-section h2{font-size:1.6rem;margin:6px 0 14px}
+.empty{text-align:center;padding:40px 16px;color:var(--muted);grid-column:1/-1;border:2.5px dashed var(--line);border-radius:20px}
+.empty h3{color:var(--ink);font-size:1.5rem;font-weight:800;margin-bottom:6px}
+section h2{font-size:1.7rem;font-weight:800;font-stretch:85%;margin:6px 0 14px}
 section + section{margin-top:40px}
 
-form.add{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;max-width:640px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+/* ---------- Add form ---------- */
+.scanbox{background:var(--grape);color:#fff;border:2.5px solid var(--edge);box-shadow:5px 5px 0 var(--edge);border-radius:22px;padding:18px;max-width:640px;margin-bottom:20px;display:grid;gap:12px}
+.scanbox h2{font-size:1.6rem;font-weight:800;font-stretch:85%}
+.scanbox p{margin:0;opacity:.92;font-size:.95rem}
+.scanbox .btn.primary{background:var(--sun)}
+.isbnrow{display:flex;gap:8px}
+.isbnrow input{flex:1;min-width:0;border:2.5px solid var(--edge);border-radius:14px;padding:11px 14px;min-height:50px;background:#fff;color:#1D0F33}
+.isbnrow .btn{flex:0 0 auto;background:#fff;color:#1D0F33}
+.scanmsg{font-weight:700;font-size:.95rem;min-height:1.3em}
+form.add{background:var(--surface);border:2.5px solid var(--edge);box-shadow:5px 5px 0 var(--edge);border-radius:22px;padding:20px;max-width:640px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 form.add > *,.row > *,label.f > *{min-width:0}
+form.add h2{font-size:1.6rem;font-weight:800;font-stretch:85%}
+label.f,.f{display:grid;gap:6px;font-weight:700}
+.hint{font-weight:400;color:var(--muted);font-size:.88rem}
 select{max-width:100%;text-overflow:ellipsis}
-form.add h2{font-size:1.5rem}
-label.f,.f{display:grid;gap:6px;font-weight:600}
-.hint{font-weight:400;color:var(--muted);font-size:.9rem}
-form.add input[type=text],form.add select,form.add textarea,dialog input[type=text],dialog textarea{background:var(--field);border:1.5px solid var(--line);border-radius:10px;padding:12px;min-height:50px;width:100%}
+form.add input[type=text],form.add select,form.add textarea,dialog input[type=text],dialog textarea{background:var(--field);border:2px solid var(--line);border-radius:12px;padding:12px;min-height:50px;width:100%}
+form.add input[type=text]:focus,form.add select:focus,form.add textarea:focus,dialog input[type=text]:focus,dialog textarea:focus{border-color:var(--grape);outline:none}
 form.add textarea{min-height:80px;resize:vertical}
 .row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
 .choice{display:flex;gap:10px;flex-wrap:wrap}
-.choice label{flex:1 1 140px;border:1.5px solid var(--line);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center;font-weight:600;background:var(--field)}
-.choice input{width:22px;height:22px;accent-color:var(--accent)}
-.preview{max-width:140px;border-radius:8px;display:none}
-.err{color:var(--warn);font-weight:600;min-height:1.2em}
+.choice label{flex:1 1 140px;border:2.5px solid var(--edge);border-radius:14px;padding:12px;display:flex;gap:10px;align-items:center;font-weight:700;background:var(--field)}
+.choice label:has(input:checked){background:var(--sky);color:var(--on-accent)}
+.choice input{width:22px;height:22px;accent-color:var(--pink)}
+.preview{width:120px;border-radius:12px;border:2.5px solid var(--edge);display:none}
+.err{color:var(--bad);font-weight:700;min-height:1.2em}
 
-dialog{border:0;border-radius:18px;padding:0;background:var(--surface);color:var(--ink);width:min(520px,94vw);max-height:88vh}
-dialog::backdrop{background:rgba(10,14,24,.55)}
+/* ---------- Sheets (dialogs) ---------- */
+dialog{border:2.5px solid var(--edge);border-radius:24px;padding:0;background:var(--surface);color:var(--ink);width:min(520px,94vw);max-height:88vh;box-shadow:6px 6px 0 var(--edge)}
+dialog::backdrop{background:rgba(20,10,36,.6)}
+@media (max-width:620px){
+  dialog{width:100%;max-width:100%;margin:auto 0 0;border-radius:24px 24px 0 0;border-bottom:0;box-shadow:none;max-height:92vh;padding-bottom:env(safe-area-inset-bottom,0px)}
+  dialog[open]{animation:up .22s ease-out}
+}
+@keyframes up{from{transform:translateY(40px);opacity:.6}to{transform:none;opacity:1}}
 .dlg{padding:22px;display:grid;gap:14px}
-.dlg h3{font-size:1.4rem}
-.pick{display:grid;gap:10px;max-height:46vh;overflow:auto}
-.pick label{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:12px;background:var(--field)}
-.pick input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+.dlg h3{font-size:1.5rem;font-weight:800;font-stretch:85%}
+.pick{display:grid;gap:10px;max-height:46vh;overflow:auto;padding:2px}
+.pick label{display:flex;gap:12px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:12px;background:var(--field);font-weight:600}
+.pick label:has(input:checked){border-color:var(--edge);background:var(--mine-msg)}
+.pick input{width:22px;height:22px;accent-color:var(--pink);flex:none}
+.nickrow{display:flex;gap:8px}
+.nickrow input{flex:1;min-width:0}
+.nickrow .btn{flex:0 0 auto}
 
-.chatlog{display:flex;flex-direction:column;gap:8px;height:min(46vh,380px);overflow-y:auto;background:var(--field);border-radius:12px;padding:12px}
-.msg{max-width:82%;padding:8px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);align-self:flex-start;overflow-wrap:anywhere}
-.msg.me{align-self:flex-end;background:var(--mine);border-color:transparent}
-.msg .w{font-size:.78rem;color:var(--muted);display:block}
+.chatlog{display:flex;flex-direction:column;gap:8px;height:min(46vh,380px);overflow-y:auto;background:var(--field);border-radius:16px;padding:12px}
+.msg{max-width:82%;padding:8px 12px;border-radius:18px 18px 18px 4px;background:var(--surface);border:2px solid var(--line);align-self:flex-start;overflow-wrap:anywhere}
+.msg.me{align-self:flex-end;background:var(--mine-msg);border-color:transparent;border-radius:18px 18px 4px 18px}
+.msg .w{font-size:.75rem;color:var(--muted);display:block}
 .chatin{display:flex;gap:8px}
-.chatin input{flex:1}
+.chatin input{flex:1;min-width:0}
 .chatin .btn{flex:0 0 auto}
 
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;z-index:10}
+#scanRegion{width:100%;min-height:240px;border-radius:16px;overflow:hidden;background:#000;border:2.5px solid var(--edge)}
+#scanRegion video{width:100%!important;display:block}
+
+.terms{max-height:58vh;overflow-y:auto;padding-right:6px;font-size:.95rem}
+.terms h4{font-family:var(--display);font-size:1.1rem;margin:16px 0 4px}
+.terms p,.terms ul{margin:0 0 6px}
+.terms ul{padding-left:20px}
+.agree{display:flex;gap:12px;align-items:flex-start;font-weight:500;font-size:.92rem}
+.agree input{width:24px;height:24px;flex:none;margin-top:1px;accent-color:var(--pink)}
+.linkbtn{background:none;border:0;padding:0;color:inherit;text-decoration:underline;font-weight:800;cursor:pointer}
+.myid{font-size:.8rem;color:var(--muted);overflow-wrap:anywhere;margin:0}
+.myid code{font-size:.8rem}
+.adm{background:var(--surface);border:2.5px solid var(--edge);border-radius:18px;padding:16px;display:grid;gap:10px;margin-bottom:14px;box-shadow:4px 4px 0 var(--edge)}
+.adm h3{font-size:1.25rem}
+.adm ul{margin:0;padding-left:20px;font-size:.9rem}
+.adm li{margin-bottom:4px}
+footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0px));color:var(--muted);font-size:.88rem;text-align:center}
+
+.toast{position:fixed;left:50%;bottom:calc(var(--bar) + 22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(16px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:16px;font-weight:700;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;z-index:10}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-@media (prefers-reduced-motion:reduce){.toast{transition:none}}
-@media (max-width:520px){.row{grid-template-columns:minmax(0,1fr)} .grid{grid-template-columns:minmax(0,1fr);gap:14px} .book{flex-direction:row} .cover{width:118px;flex:none;aspect-ratio:auto;min-height:190px;padding:40px 10px 12px 20px} .cover::before{width:9px} .cover .t{font-size:1rem} .cover .a{font-size:.8rem} .tag{top:8px;right:8px;font-size:.74rem} .body{min-width:0} nav.tabs button{padding:10px 11px;font-size:.95rem} .btn{font-size:.95rem;padding:10px 12px}}
+@media (prefers-reduced-motion:reduce){.toast,.btn{transition:none} dialog[open]{animation:none}}
+
+@media (max-width:560px){
+  .row{grid-template-columns:minmax(0,1fr)}
+  .grid{grid-template-columns:minmax(0,1fr);gap:18px}
+  .book{flex-direction:row;border-radius:18px;box-shadow:4px 4px 0 var(--edge)}
+  .cover{width:118px;flex:none;aspect-ratio:auto;min-height:200px;padding:42px 10px 12px;border-bottom:0;border-right:2.5px solid var(--edge)}
+  .cover .t{font-size:1.1rem} .cover .a{font-size:.75rem}
+  .tag{top:8px;right:auto;left:8px;font-size:.72rem}
+  .how li{font-size:.8rem;padding:8px 10px} .how li b{font-size:1.25rem}
+  .btn{font-size:.95rem;padding:10px 12px}
+}
 @media (max-width:360px){.cover{width:96px}}
 </style>
 </head>
@@ -126,46 +201,57 @@ dialog::backdrop{background:rgba(10,14,24,.55)}
 <header class="top">
   <div class="wrap">
     <div class="toprow">
-      <h1>Neighbourhood Book Swap</h1>
+      <h1 class="wordmark">book<br>swap<span class="sticker">nearby</span></h1>
       <button class="hello" id="helloBtn" hidden></button>
     </div>
-    <p>Bring a book, take a book. Every book you get is swapped for one of yours.</p>
-    <nav class="tabs" role="tablist">
-      <button role="tab" data-tab="browse" aria-selected="true">Browse</button>
-      <button role="tab" data-tab="mine" aria-selected="false">My books<span class="badge" id="mineBadge" hidden></span></button>
-      <button role="tab" data-tab="add" aria-selected="false">Add a book</button>
-    </nav>
+    <p class="tagline">Trade the books you've finished for ones you haven't, with people who live near you.</p>
   </div>
 </header>
-<div class="shelf-edge" aria-hidden="true"></div>
 
 <main class="wrap">
   <div id="notice" class="notice" hidden></div>
   <div id="alert" class="alert" hidden></div>
 
   <div id="tab-browse">
-    <div class="rule"><strong>How swapping works:</strong> when you ask for a book, you offer one of your own listed books in return. If the owner accepts, you both hand over your books.</div>
+    <ol class="how" id="how" aria-label="How swapping works">
+      <li><b>1</b>List a book you've read</li>
+      <li><b>2</b>Pick one you want and offer yours</li>
+      <li><b>3</b>Meet up and swap</li>
+    </ol>
     <div class="controls">
-      <input id="q" type="search" placeholder="Search by title or author" aria-label="Search by title or author">
-      <select id="fGenre" aria-label="Genre"></select>
-      <select id="fArea" aria-label="Area"></select>
-      <select id="fStatus" aria-label="Availability">
-        <option value="available">Available now</option>
-        <option value="all">All books</option>
-      </select>
+      <input id="q" type="search" placeholder="Search title or author" aria-label="Search by title or author">
+      <div class="chips">
+        <select id="fStatus" aria-label="Availability">
+          <option value="available">Up for swap</option>
+          <option value="all">All books</option>
+        </select>
+        <select id="fGenre" aria-label="Genre"></select>
+        <select id="fArea" aria-label="Area"></select>
+      </div>
     </div>
     <div id="grid" class="grid"></div>
   </div>
 
   <div id="tab-mine" hidden>
-    <section id="secAnswer" hidden><h2>Needs your answer</h2><div id="gridAnswer" class="grid"></div></section>
-    <section><h2>Books I've listed</h2><div id="gridListed" class="grid"></div></section>
-    <section><h2>Books I've asked for or received</h2><div id="gridBorrowed" class="grid"></div></section>
+    <section id="secAnswer" hidden><h2>Swap requests for you</h2><div id="gridAnswer" class="grid"></div></section>
+    <section><h2>On your shelf</h2><div id="gridListed" class="grid"></div></section>
+    <section><h2>Books you asked for</h2><div id="gridBorrowed" class="grid"></div></section>
   </div>
 
   <div id="tab-add" hidden>
+    <div class="scanbox" id="scanBox">
+      <h2>Scan to fill it in</h2>
+      <p>Point your camera at the barcode on the back cover. We'll add the cover, title and author for you.</p>
+      <button class="btn primary" type="button" id="scanBtn">Scan barcode</button>
+      <div class="isbnrow">
+        <input type="text" id="isbnInput" inputmode="numeric" maxlength="17" placeholder="Or type the ISBN" aria-label="ISBN number">
+        <button class="btn" type="button" id="isbnBtn">Find</button>
+      </div>
+      <div class="scanmsg" id="scanMsg" role="status"></div>
+    </div>
     <form class="add" id="addForm" novalidate>
-      <h2 id="formTitle">Add a book</h2>
+      <h2 id="formTitle">Book details</h2>
+      <input type="hidden" name="isbn" id="isbnField">
       <label class="f">Title<input type="text" name="title" maxlength="120" required></label>
       <label class="f">Author<input type="text" name="author" maxlength="80" required></label>
       <div class="row">
@@ -183,14 +269,14 @@ dialog::backdrop{background:rgba(10,14,24,.55)}
       <label class="f" id="lendRow">Lend for
         <select name="lendWeeks"><option value="1">1 week</option><option value="2" selected>2 weeks</option><option value="4">1 month</option><option value="8">2 months</option></select>
       </label>
-      <label class="f">Area or building <span class="hint">Helps neighbours find books nearby, e.g. "Tower B" or "Baner"</span>
+      <label class="f">Area or building <span class="hint">So people nearby can find it, e.g. "Tower B" or "Baner"</span>
         <input type="text" name="area" id="areaInput" maxlength="40" list="areaList">
         <datalist id="areaList"></datalist>
       </label>
-      <label class="f">Pickup details <span class="hint">Where and when people can collect it, e.g. "Block C gate, evenings"</span>
+      <label class="f">Pickup spot <span class="hint">e.g. "Main gate, evenings". Don't add your flat number.</span>
         <textarea name="note" maxlength="240"></textarea>
       </label>
-      <label class="f">Photo of the cover <span class="hint">Optional</span>
+      <label class="f">Cover photo <span class="hint">Optional. Scanning adds one, or upload a photo of your copy.</span>
         <input type="file" id="photo" accept="image/*">
       </label>
       <img id="preview" class="preview" alt="Cover preview">
@@ -201,15 +287,69 @@ dialog::backdrop{background:rgba(10,14,24,.55)}
       </div>
     </form>
   </div>
+  <div id="tab-admin" hidden>
+    <section><h2>Reported listings</h2><div id="reportList"></div></section>
+    <section><h2>Blocked listings</h2><div id="blockedList"></div></section>
+    <section><h2>Blocked users</h2><div id="blockedUsersList"></div></section>
+  </div>
 </main>
+<footer class="foot wrap">A free community project. <button type="button" class="linkbtn" data-terms>Terms of use</button></footer>
+
+<nav class="tabs" role="tablist" aria-label="Sections">
+  <button role="tab" data-tab="browse" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="2"/><rect x="14" y="3" width="7" height="5" rx="2"/><rect x="14" y="12" width="7" height="9" rx="2"/><rect x="3" y="16" width="7" height="5" rx="2"/></svg>Browse</button>
+  <button role="tab" data-tab="add" aria-selected="false"><span class="fab"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span>Add</button>
+  <button role="tab" data-tab="mine" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3v16H5zM10 4h3v16h-3zM15.5 5.2l2.9-.8 3.6 15-2.9.8z"/></svg>My shelf<span class="badge" id="mineBadge" hidden></span></button>
+  <button role="tab" data-tab="admin" aria-selected="false" id="adminTabBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/></svg>Admin<span class="badge" id="adminBadge" hidden></span></button>
+</nav>
+
+<dialog id="scanDlg">
+  <div class="dlg">
+    <h3>Scan the barcode</h3>
+    <p class="hint" style="margin:0">Use the barcode on the back cover. The ISBN one usually starts with 978.</p>
+    <div id="scanRegion"></div>
+    <div class="err" id="scanErr" role="alert"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="scanClose">Cancel</button></div>
+  </div>
+</dialog>
+
+<dialog id="reportDlg">
+  <form class="dlg" id="reportForm" method="dialog">
+    <div id="reportBody" style="display:grid;gap:14px">
+      <h3 id="reportTitle">Report this listing</h3>
+      <p class="hint" style="margin:0">Tell the admin what's wrong. Your report is private. Listings reported by several people are hidden until the admin checks them.</p>
+      <div class="pick" id="reportReasons"></div>
+      <label class="f">More details <span class="hint">Optional</span><textarea id="reportNote" maxlength="300"></textarea></label>
+      <div class="err" id="reportErr"></div>
+      <div class="actions"><button class="btn primary" type="submit" id="reportSend">Send report</button><button class="btn ghost" type="button" id="reportCancel">Cancel</button></div>
+    </div>
+    <div id="reportDone" style="display:none;gap:14px">
+      <h3>Thanks for flagging it</h3>
+      <p style="margin:0">The admin will check your report and decide whether to block this listing.</p>
+      <div class="actions" id="reportDoneActions"></div>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="termsDlg">
+  <div class="dlg">
+    <h3>Terms of use</h3>
+    <div class="terms" id="termsBody"></div>
+    <div class="actions"><button class="btn primary" id="termsClose">Close</button></div>
+  </div>
+</dialog>
 
 <dialog id="nameDlg">
   <form class="dlg" method="dialog" id="nameForm">
-    <h3>Welcome to the swap</h3>
-    <p class="hint" style="margin:0">What should neighbours call you? Use a name they'll recognise, like "Priya, Flat 402".</p>
-    <input type="text" id="nameInput" maxlength="40" aria-label="Your name" required>
+    <h3 id="nameTitle">Pick a nickname</h3>
+    <p class="hint" style="margin:0" id="nameHint">This is what people see instead of your real name. Use letters, numbers, _ or . (3 to 20 characters).</p>
+    <div class="nickrow">
+      <input type="text" id="nameInput" maxlength="20" autocapitalize="none" autocomplete="off" spellcheck="false" placeholder="e.g. chai_and_chapters" aria-label="Nickname" required>
+      <button class="btn" type="button" id="randomNick">Random</button>
+    </div>
+    <label class="agree" id="agreeRow"><input type="checkbox" id="agreeBox"><span>I've read and agree to the <button type="button" class="linkbtn" data-terms>Terms of use</button>. Swaps are between neighbours, and I'm responsible for the books I lend, give and borrow.</span></label>
     <div class="err" id="nameErr"></div>
-    <div class="actions"><button class="btn primary" type="submit">Save my name</button></div>
+    <p class="myid" id="myIdRow" hidden>Your user ID: <code id="myId"></code> <button type="button" class="linkbtn" id="copyId">Copy</button></p>
+    <div class="actions"><button class="btn primary" type="submit">Save and continue</button></div>
   </form>
 </dialog>
 
@@ -226,7 +366,7 @@ dialog::backdrop{background:rgba(10,14,24,.55)}
 <dialog id="chatDlg">
   <div class="dlg">
     <h3 id="chatTitle">Chat</h3>
-    <p class="hint" style="margin:0" id="chatHint">Only the two of you can see these messages. Agree on a time and place to swap.</p>
+    <p class="hint" style="margin:0" id="chatHint">Only the two of you can see this chat. Agree on a time and a public spot to swap.</p>
     <div class="chatlog" id="chatLog" aria-live="polite"></div>
     <form class="chatin" id="chatForm">
       <input type="text" id="chatInput" maxlength="500" placeholder="Type a message" aria-label="Message">
@@ -245,7 +385,6 @@ dialog::backdrop{background:rgba(10,14,24,.55)}
    Until you do, the app runs in demo mode (saved on this device only).
    ========================================================= */
 const FIREBASE_CONFIG = {
-  
   apiKey: "AIzaSyDj0rvXdxUWgV-2-NKWD_wJqahLPEL8VTg",
   authDomain: "book-swap-f9983.firebaseapp.com",
   projectId: "book-swap-f9983",
@@ -254,8 +393,28 @@ const FIREBASE_CONFIG = {
   appId: "1:471772465053:web:5a8b71d6695a551f711174"
 };
 
+/* Who neighbours should contact about problems. Change this to your details. */
+const ORGANISER_CONTACT = "the app organiser through your society's WhatsApp group";
+const TERMS_VERSION = "2026-10";
+/* Admin's WhatsApp number with country code, digits only (e.g. "919876543210").
+   If set, people who report a listing get a button to message the admin directly. Leave "" to turn off. */
+const ADMIN_WHATSAPP = "";
+/* A listing is hidden automatically once this many different neighbours report it, until the admin reviews it. */
+const REPORT_HIDE_AT = 3;
+const REPORT_REASONS = ["Fake or misleading listing","Selling or asking for money","Pirated or illegal copy","Offensive or inappropriate","Spam or duplicate","Other"];
+
 const GENRES=["Fiction","Non-fiction","Children","Mystery & thriller","Romance","Science fiction & fantasy","Biography","Self-help","Textbook","Poetry","Religion & spirituality","Other"];
-const COVERS=["#2F6B5E","#8A3B3B","#34507F","#7A5A1E","#5B3F74","#2D6E8A","#9A4E2A","#3E5E2E","#6B2F4F","#44506B"];
+const COVERS=["#FF4F81","#FFD23F","#2FD08A","#49B6FF","#B79CFF","#FF9F45","#7EE8D8","#FFB3C7"];
+const NICK_RE=/^[a-z0-9_.]{3,20}$/;
+const validNick=n=>NICK_RE.test(n||"");
+const cleanNick=v=>(v||"").trim().toLowerCase().replace(/^@/,"").replace(/\s+/g,"_");
+const handle=(name,id)=>id===me?"you":(validNick(name)?"@"+name:"a neighbour");
+function randomNick(){
+  const a=["cozy","midnight","chai","rainy","lofi","sleepy","plot","dog_eared","cosmic","paper","velvet","mango","quiet","neon","sunday"];
+  const b=["reader","otter","bookworm","owl","chapters","pages","shelf","fox","panda","koala","moth","marginalia","spine","bard","nook"];
+  return a[Math.floor(Math.random()*a.length)]+"_"+b[Math.floor(Math.random()*b.length)]+Math.floor(10+Math.random()*90);
+}
+const safeImg=u=>typeof u==="string"&&(/^data:image\//.test(u)||/^https:\/\//.test(u))?u:"";
 const DAY=86400000;
 const $=s=>document.querySelector(s);
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -265,6 +424,8 @@ const fmtDate=t=>new Date(t).toLocaleDateString(undefined,{day:"numeric",month:"
 const areaKey=a=>(a||"").trim().toLowerCase();
 
 let books=[], me=null, myName=store.get("swap-name")||"", editingId=null;
+let isAdmin=false, amBlocked=false, reports=[], blockedUsers=[];
+const isHidden=b=>!!b.blocked||(b.reportedBy||[]).length>=REPORT_HIDE_AT;
 
 /* ---------------- Data layer ----------------
    commit(updates, checks): updates = {bookId: patch}, checks = {bookId: expectedStatus}.
@@ -301,7 +462,25 @@ async function makeFirebaseApi(){
       await fs.setDoc(ref,{participants},{merge:true});
       return fs.onSnapshot(ref,s=>cb((s.data()||{}).messages||[]),onErr);
     },
-    sendMessage(chatId,msg){return fs.updateDoc(fs.doc(db,"chats",chatId),{messages:fs.arrayUnion(msg)})}
+    sendMessage(chatId,msg){return fs.updateDoc(fs.doc(db,"chats",chatId),{messages:fs.arrayUnion(msg)})},
+    async isAdmin(){try{return (await fs.getDoc(fs.doc(db,"admins",uid))).exists()}catch{return false}},
+    async isBlocked(){try{return (await fs.getDoc(fs.doc(db,"blockedUsers",uid))).exists()}catch{return false}},
+    report(bookId,data){
+      const b=fs.writeBatch(db);
+      b.set(fs.doc(db,"reports",bookId+"_"+uid),data);
+      b.update(fs.doc(db,"books",bookId),{reportedBy:fs.arrayUnion(uid)});
+      return b.commit();
+    },
+    subscribeReports(cb,onErr){fs.onSnapshot(fs.collection(db,"reports"),s=>cb(s.docs.map(d=>({id:d.id,...d.data()}))),onErr)},
+    subscribeBlockedUsers(cb,onErr){fs.onSnapshot(fs.collection(db,"blockedUsers"),s=>cb(s.docs.map(d=>({id:d.id,...d.data()}))),onErr)},
+    adminBatch(updates,reportIds=[],blockUsers={},unblockUsers=[]){
+      const b=fs.writeBatch(db);
+      for(const [id,p] of Object.entries(updates))b.update(fs.doc(db,"books",id),p);
+      for(const r of reportIds)b.delete(fs.doc(db,"reports",r));
+      for(const [u,d] of Object.entries(blockUsers))b.set(fs.doc(db,"blockedUsers",u),d);
+      for(const u of unblockUsers)b.delete(fs.doc(db,"blockedUsers",u));
+      return b.commit();
+    }
   };
 }
 
@@ -310,6 +489,8 @@ function makeLocalApi(){
   const read=()=>{try{return JSON.parse(store.get(K)||"[]")}catch{return []}};
   const write=a=>{store.set(K,JSON.stringify(a));listener(a)};
   const readC=()=>{try{return JSON.parse(store.get(KC)||"{}")}catch{return {}}};
+  const rj=(k,d)=>{try{return JSON.parse(store.get(k)||"null")??d}catch{return d}}, wj=(k,v)=>store.set(k,JSON.stringify(v));
+  let repL=()=>{}, buL=()=>{};
   let uid=store.get("swap-demo-uid"); if(!uid){uid="u"+Math.random().toString(36).slice(2);store.set("swap-demo-uid",uid)}
   return {
     uid,
@@ -329,6 +510,21 @@ function makeLocalApi(){
     async sendMessage(chatId,msg){
       const c=readC(); c[chatId].messages.push(msg); store.set(KC,JSON.stringify(c));
       if(chatL&&chatL.chatId===chatId)chatL.cb(c[chatId].messages);
+    },
+    async isAdmin(){return rj("swap-demo-admins",[]).includes(uid)},
+    async isBlocked(){return rj("swap-demo-blockedusers",[]).some(x=>x.id===uid)},
+    async report(bookId,data){
+      const r=rj("swap-demo-reports",[]).filter(x=>x.id!==bookId+"_"+uid); r.push({id:bookId+"_"+uid,...data}); wj("swap-demo-reports",r); repL(r);
+      write(read().map(b=>b.id===bookId?{...b,reportedBy:[...new Set([...(b.reportedBy||[]),uid])]}:b));
+    },
+    subscribeReports(cb){repL=cb;cb(rj("swap-demo-reports",[]))},
+    subscribeBlockedUsers(cb){buL=cb;cb(rj("swap-demo-blockedusers",[]))},
+    async adminBatch(updates,reportIds=[],blockUsers={},unblockUsers=[]){
+      write(read().map(b=>updates[b.id]?{...b,...updates[b.id]}:b));
+      const r=rj("swap-demo-reports",[]).filter(x=>!reportIds.includes(x.id)); wj("swap-demo-reports",r); repL(r);
+      let bu=rj("swap-demo-blockedusers",[]).filter(x=>!unblockUsers.includes(x.id)&&!(x.id in blockUsers));
+      for(const [u,d] of Object.entries(blockUsers))bu.push({id:u,...d});
+      wj("swap-demo-blockedusers",bu); buL(bu);
     }
   };
 }
@@ -337,10 +533,12 @@ function makeLocalApi(){
 function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),2800)}
 function notice(m){const n=$("#notice");n.hidden=!m;n.textContent=m||""}
 const byId=id=>books.find(b=>b.id===id);
-const nm=(name,id)=>id===me?"you":(name||"A neighbour");
+const nm=handle;
 const partnerOf=b=>b.ownerId===me?{id:b.requesterId,name:b.requesterName}:{id:b.ownerId,name:b.ownerName};
 
 function statusText(b){
+  if(b.blocked&&b.status==="available")return "Blocked";
+  if(isHidden(b)&&b.status==="available")return "Under review";
   if(b.status==="available")return b.mode==="give"?"Available to swap (keep)":"Available to swap (lend)";
   if(b.status==="requested")return "Requested by "+nm(b.requesterName,b.requesterId);
   if(b.status==="offered"){const t=byId(b.forBookId);return "Offered in a swap"+(t?` for "${t.title}"`:"")}
@@ -359,6 +557,7 @@ const inSwap=b=>["requested","out","given"].includes(b.status)&&b.requesterId&&(
 function actionsFor(b){
   const mine=b.ownerId===me, out=[];
   const B=(act,label,cls="primary")=>`<button class="btn ${cls}" data-act="${act}" data-id="${b.id}">${label}</button>`;
+  if(mine&&isHidden(b)&&b.status==="available")return B("remove","Remove","danger");
   if(mine){
     if(b.status==="requested"){out.push(B("accept","Accept swap & hand over"));out.push(B("decline","Decline","ghost"))}
     else if(b.status==="offered"){out.push(B("withdraw","Withdraw my offer","ghost"))}
@@ -366,15 +565,20 @@ function actionsFor(b){
     if(b.status==="available"){out.push(B("edit","Edit","ghost"));out.push(B("share","Share","ghost"))}
     if(b.status==="available"||b.status==="given")out.push(B("remove","Remove","danger"));
   }else{
-    if(b.status==="available"){out.push(B("request","Swap for this book"));out.push(B("share","Share","ghost"))}
+    if(b.status==="available"&&!isHidden(b)){if(!amBlocked)out.push(B("request","Swap for this book"));out.push(B("share","Share","ghost"))}
     else if(b.status==="requested"&&b.requesterId===me)out.push(B("cancel","Cancel request","ghost"));
   }
   if(inSwap(b)&&b.status!=="given"||inSwap(b)&&b.status==="given"&&Date.now()-(b.swappedAt||0)<14*DAY){
-    out.push(B("chat","Chat with "+esc((partnerOf(b).name||"neighbour").split(",")[0]),"ghost"));
+    out.push(B("chat","Chat with "+esc(handle(partnerOf(b).name,"")),"ghost"));
   }
   return out.join("");
 }
 
+function reportLink(b){
+  if(b.ownerId===me||isHidden(b)||b.status==="given")return "";
+  if((b.reportedBy||[]).includes(me))return `<div class="flagged">⚑ You reported this listing</div>`;
+  return `<button class="flag" data-act="report" data-id="${esc(b.id)}">⚑ Report this listing</button>`;
+}
 function swapInfo(b){
   if(b.status==="requested"){const o=byId(b.offeredBookId);if(o)return `<div class="swapbox">In exchange: <strong>${esc(o.title)}</strong> by ${esc(o.author)} (${esc(o.condition)})</div>`}
   if((b.status==="out"||b.status==="given")&&b.swapWithId){const o=byId(b.swapWithId);if(o)return `<div class="swapbox">Swapped for <strong>${esc(o.title)}</strong></div>`}
@@ -383,23 +587,23 @@ function swapInfo(b){
 
 function card(b,withId=false){
   const color=COVERS[hash(b.title+b.author)%COVERS.length];
-  const tag=b.mode==="give"?"Keep":"Lend";
-  const cover=b.photo
-    ?`<div class="cover photo"><img src="${esc(b.photo)}" alt="Cover of ${esc(b.title)}" loading="lazy"><span class="tag">${tag}</span></div>`
-    :`<div class="cover" style="background:${color}"><span class="tag">${tag}</span><div class="t">${esc(b.title)}</div><div class="a">${esc(b.author)}</div></div>`;
-  const lendInfo=b.mode==="lend"&&b.status==="available"?` &middot; lent for ${b.lendWeeks==4?"1 month":b.lendWeeks==8?"2 months":(b.lendWeeks||2)+" week"+((b.lendWeeks||2)>1?"s":"")}`:"";
+  const tag=b.mode==="give"?"Keep":"Lend", img=safeImg(b.photo);
+  const cover=`<div class="cover" style="background:${color}"><span class="tag ${b.mode==="give"?"keep":"lend"}">${tag}</span><div class="t">${esc(b.title)}</div><div class="a">${esc(b.author)}</div>${img?`<img src="${esc(img)}" alt="Cover of ${esc(b.title)}" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">`:""}</div>`;
+  const lendInfo=b.mode==="lend"&&b.status==="available"?`, lent for ${b.lendWeeks==4?"1 month":b.lendWeeks==8?"2 months":(b.lendWeeks||2)+" week"+((b.lendWeeks||2)>1?"s":"")}`:"";
   return `<article class="book"${withId?` id="book-${esc(b.id)}"`:""} data-book="${esc(b.id)}">${cover}<div class="body">
     <div class="ttl">${esc(b.title)}</div>
-    <div class="meta">${esc(b.author)} &middot; ${esc(b.genre)} &middot; ${esc(b.condition)}${lendInfo}</div>
+    <div class="meta">${esc(b.author)}, ${esc(b.genre)}, ${esc(b.condition).toLowerCase()} condition${lendInfo}</div>
     <div class="meta">Shared by ${esc(nm(b.ownerName,b.ownerId))}${b.area?" in "+esc(b.area):""}</div>
     ${b.note?`<div class="meta">Pickup: ${esc(b.note)}</div>`:""}
     ${swapInfo(b)}
     <div class="status ${b.status}">${esc(statusText(b))}</div>
     ${dueHtml(b)}
+    ${b.ownerId===me&&b.blocked?`<div class="blockmsg">Blocked by the admin because it breaks the Terms of use. Only you can see it.</div>`:b.ownerId===me&&isHidden(b)?`<div class="blockmsg">Hidden while the admin reviews reports about this listing.</div>`:""}
     <div class="actions">${actionsFor(b)}</div>
+    ${reportLink(b)}
   </div></article>`;
 }
-const empty=(t,p,btn)=>`<div class="empty"><h3>${t}</h3><p>${p}</p>${btn?`<button class="btn primary" data-goto="add">List a book</button>`:""}</div>`;
+const empty=(t,p,btn)=>`<div class="empty"><h3>${t}</h3><p>${p}</p>${btn?`<button class="btn primary" data-goto="add">Add a book</button>`:""}</div>`;
 
 function refreshAreas(){
   const seen=new Map();
@@ -415,9 +619,9 @@ function render(){
   refreshAreas();
   const q=$("#q").value.trim().toLowerCase(), g=$("#fGenre").value, s=$("#fStatus").value, ar=$("#fArea").value;
   const sorted=[...books].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  const shown=sorted.filter(b=>(!q||(b.title+" "+b.author).toLowerCase().includes(q))&&(g==="all"||b.genre===g)&&(ar==="all"||areaKey(b.area)===ar)&&(s==="all"?b.status!=="given":b.status==="available"));
+  const shown=sorted.filter(b=>!isHidden(b)&&(!q||(b.title+" "+b.author).toLowerCase().includes(q))&&(g==="all"||b.genre===g)&&(ar==="all"||areaKey(b.area)===ar)&&(s==="all"?b.status!=="given":b.status==="available"));
   $("#grid").innerHTML=shown.length?shown.map(b=>card(b,true)).join(""):
-    books.length?empty("No matching books","Try another search, or choose \"All books\" and \"All areas\".",false):empty("The shelf is empty","List a book first. You'll need one to swap anyway!",true);
+    books.length?empty("No matching books","Try another search, or choose \"All books\" and \"All areas\".",false):empty("Nothing here yet","Be the first to list a book. You'll need one to swap anyway.",true);
 
   const answer=sorted.filter(b=>b.ownerId===me&&b.status==="requested");
   const overdueMine=sorted.filter(b=>b.requesterId===me&&b.ownerId!==me&&b.status==="out"&&b.dueAt&&b.dueAt<Date.now());
@@ -425,8 +629,8 @@ function render(){
   const got=sorted.filter(b=>b.requesterId===me&&b.ownerId!==me);
   $("#secAnswer").hidden=!answer.length;
   $("#gridAnswer").innerHTML=answer.map(card).join("");
-  $("#gridListed").innerHTML=listed.length?listed.map(card).join(""):answer.length?empty("Nothing else listed","Your other books will appear here.",false):empty("Nothing listed yet","List a book so you have something to swap.",true);
-  $("#gridBorrowed").innerHTML=got.length?got.map(card).join(""):empty("No swaps yet","Books you ask for will appear here.",false);
+  $("#gridListed").innerHTML=listed.length?listed.map(card).join(""):answer.length?empty("Nothing else listed","Your other books will appear here.",false):empty("Your shelf is empty","List a book so you have something to swap.",true);
+  $("#gridBorrowed").innerHTML=got.length?got.map(card).join(""):empty("No swaps yet","Books you ask for show up here.",false);
 
   const badgeN=answer.length+overdueMine.length, bd=$("#mineBadge");
   bd.hidden=!badgeN; bd.textContent=badgeN;
@@ -436,13 +640,15 @@ function render(){
   al.hidden=!msgs.length||!$("#tab-mine").hidden;
   al.innerHTML=msgs.length?`<strong>${esc(msgs.join(" · "))}</strong><button class="btn primary small" data-goto="mine">See my books</button>`:"";
 
-  const hb=$("#helloBtn");hb.hidden=!myName;hb.textContent="Hi, "+myName.split(",")[0]+" ✎";
+  $("#how").hidden=books.some(b=>b.ownerId===me);
+  const hb=$("#helloBtn");hb.hidden=!validNick(myName);hb.textContent="@"+myName;hb.setAttribute("aria-label","Your nickname @"+myName+". Tap to change it.");
+  renderAdmin();
 }
 
 /* ---------------- Tabs & filters ---------------- */
 function showTab(n){
   document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===n)));
-  ["browse","mine","add"].forEach(t=>$("#tab-"+t).hidden=t!==n);
+  ["browse","mine","add","admin"].forEach(t=>$("#tab-"+t).hidden=t!==n);
   if(n!=="add"&&editingId)resetForm();
   render();window.scrollTo({top:0});
 }
@@ -454,18 +660,77 @@ const syncLend=()=>{$("#lendRow").hidden=$("#addForm").elements.mode.value!=="le
 document.querySelectorAll("input[name=mode]").forEach(r=>r.addEventListener("change",syncLend));
 
 /* ---------------- Name ---------------- */
-function askName(){$("#nameInput").value=myName;$("#nameErr").textContent="";$("#nameDlg").showModal()}
+const TERMS_HTML=`
+<p class="hint">Last updated October 2026. Please read these before using the app.</p>
+<h4>1. What this app is</h4>
+<p>Neighbourhood Book Swap is a free tool that helps neighbours swap books with each other. It is run by volunteers, not a shop or a company. The app only helps people find each other; every swap is a private arrangement between the two neighbours involved.</p>
+<h4>2. You are responsible for your swaps</h4>
+<ul>
+<li>You are responsible for the books you list, lend, give and borrow.</li>
+<li>Check a book's condition when you hand it over and when you receive it.</li>
+<li>Return lent books on time and in the same condition you received them.</li>
+<li>Settle any disagreement directly and politely with the other neighbour.</li>
+</ul>
+<h4>3. We are not responsible for losses</h4>
+<p>The organisers and volunteers are <strong>not responsible</strong> for any book that is lost, damaged, stolen, not returned, returned late, or not in the condition described. We are also not responsible for disputes between users, or for anything that happens when people meet to swap. You use the app and take part in swaps at your own risk.</p>
+<h4>4. Fair use</h4>
+<ul>
+<li>Only list books you own and are happy to lend or give away.</li>
+<li>No selling, charging money, or advertising. This app is for swapping only.</li>
+<li>No pirated, illegal, hateful or adult content in listings, photos or chats.</li>
+<li>Only request books you really want, and don't hold books without a reason.</li>
+<li>Be kind and respectful in chats. No harassment or spam.</li>
+</ul>
+<h4>5. Staying safe</h4>
+<p>Meet in common, well-lit places such as your building's gate or lobby. Don't share sensitive details like your bank information. Children should swap with a parent or guardian present.</p>
+<h4>6. Your information</h4>
+<p>Your nickname, area, pickup spot and book listings can be seen by everyone using the app. Use a nickname, not your real name. Chat messages can only be seen by the two people in that swap. Information is stored on Google Firebase. Don't post your full home address or phone number in a listing; share them in a private chat only if you choose to.</p>
+<h4>7. Removing content</h4>
+<p>The organisers may remove listings or block anyone who breaks these terms, without notice.</p>
+<h4>8. No guarantee</h4>
+<p>The app is provided "as is", free of charge. It may have errors, stop working, or lose data at any time, and the organisers are not liable for any loss this causes.</p>
+<h4>9. Users under 18</h4>
+<p>If you are under 18, use the app only with a parent's or guardian's permission.</p>
+<h4>10. Changes and questions</h4>
+<p>These terms may be updated. If they change, you will be asked to agree again. For questions or problems, contact ${ORGANISER_CONTACT.replace(/[<>&]/g,"")}.</p>`;
+$("#termsBody").innerHTML=TERMS_HTML;
+const termsOk=()=>store.get("swap-terms")===TERMS_VERSION;
+function openTerms(){$("#termsDlg").showModal();$("#termsBody").scrollTop=0}
+document.addEventListener("click",e=>{if(e.target.closest("[data-terms]")){e.preventDefault();openTerms()}});
+$("#termsClose").addEventListener("click",()=>$("#termsDlg").close());
+function askName(){
+  const had=!!myName, ok=validNick(myName);
+  $("#nameInput").value=ok?myName:"";$("#nameErr").textContent="";
+  $("#nameTitle").textContent=ok?"Your nickname":had?"Switch to a nickname":"Pick a nickname";
+  $("#nameHint").textContent=(had&&!ok?"We no longer show real names. ":"")+"This is what people see instead of your real name. Use letters, numbers, _ or . (3 to 20 characters).";
+  $("#agreeBox").checked=termsOk();$("#agreeRow").hidden=termsOk();$("#nameDlg").showModal();
+}
+$("#randomNick").addEventListener("click",()=>{$("#nameInput").value=randomNick();$("#nameErr").textContent=""});
+async function syncMyNick(){
+  // Update the nickname on my listings and my requests so old names disappear.
+  if(!api)return;
+  for(const b of books){
+    try{
+      if(b.ownerId===me&&b.ownerName!==myName)await api.edit(b.id,{ownerName:myName});
+      else if(b.requesterId===me&&b.ownerId!==me&&b.requesterName!==myName)await api.commit({[b.id]:{requesterName:myName}});
+    }catch(e){console.warn("nickname sync",e)}
+  }
+}
 $("#helloBtn").addEventListener("click",askName);
+$("#copyId").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(me);toast("ID copied")}catch{toast("Select the ID and copy it")}});
 $("#nameForm").addEventListener("submit",e=>{
-  const v=$("#nameInput").value.trim();
-  if(!v){e.preventDefault();$("#nameErr").textContent="Add a name so neighbours know who you are.";return}
-  myName=v;store.set("swap-name",v);render();toast("Name saved");
+  const v=cleanNick($("#nameInput").value);
+  if(!v){e.preventDefault();$("#nameErr").textContent="Add a nickname, or tap Random.";return}
+  if(!validNick(v)){e.preventDefault();$("#nameErr").textContent="Use 3 to 20 letters, numbers, _ or . (no spaces or symbols).";return}
+  if(!$("#agreeBox").checked){e.preventDefault();$("#nameErr").textContent="Please tick the box to agree to the Terms of use.";return}
+  const changed=v!==myName; myName=v;store.set("swap-name",v);store.set("swap-terms",TERMS_VERSION);render();toast("You're @"+v);
+  if(changed)syncMyNick();
 });
-const needName=()=>{if(!myName){askName();return true}return false};
+const needName=()=>{if(!validNick(myName)||!termsOk()){askName();return true}return false};
 
 /* ---------------- Swap dialog ---------------- */
 function openSwap(target){
-  const mineAvail=books.filter(b=>b.ownerId===me&&b.status==="available");
+  const mineAvail=books.filter(b=>b.ownerId===me&&b.status==="available"&&!isHidden(b));
   $("#swapErr").textContent="";
   if(!mineAvail.length){
     $("#swapTitle").textContent="List a book first";
@@ -475,7 +740,7 @@ function openSwap(target){
     $("#goAdd").onclick=()=>{$("#swapDlg").close();showTab("add")};
   }else{
     $("#swapTitle").textContent=`Swap for "${target.title}"`;
-    $("#swapHint").textContent="Pick one of your books to give "+(target.ownerName||"the owner")+" in exchange.";
+    $("#swapHint").textContent="Pick one of your books to give "+handle(target.ownerName,"")+" in exchange. Check both books' condition when you meet. Swaps are your own responsibility.";
     $("#swapPick").innerHTML=mineAvail.map((b,i)=>`<label><input type="radio" name="offer" value="${esc(b.id)}" ${i===0?"checked":""}><span><strong>${esc(b.title)}</strong><br><span class="hint">${esc(b.author)} &middot; ${esc(b.condition)} &middot; ${b.mode==="give"?"to keep":"lend"}</span></span></label>`).join("");
     $("#swapActions").innerHTML=`<button class="btn primary" id="swapSend">Send swap request</button><button class="btn ghost" id="swapClose">Cancel</button>`;
     $("#swapSend").onclick=async()=>{
@@ -503,13 +768,13 @@ let chatUnsub=null, chatId=null;
 function renderChat(msgs){
   const log=$("#chatLog");
   if(!msgs.length){log.innerHTML=`<div class="hint" style="margin:auto;text-align:center">No messages yet. Say hello and suggest a pickup time.</div>`;return}
-  log.innerHTML=msgs.slice().sort((a,b)=>a.at-b.at).map(m=>`<div class="msg ${m.from===me?"me":""}"><span class="w">${m.from===me?"You":esc(m.name||"Neighbour")} &middot; ${new Date(m.at).toLocaleString(undefined,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</span>${esc(m.text)}</div>`).join("");
+  log.innerHTML=msgs.slice().sort((a,b)=>a.at-b.at).map(m=>`<div class="msg ${m.from===me?"me":""}"><span class="w">${m.from===me?"You":esc(handle(m.name,""))} &middot; ${new Date(m.at).toLocaleString(undefined,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</span>${esc(m.text)}</div>`).join("");
   log.scrollTop=log.scrollHeight;
 }
 async function openChat(b){
   const p=partnerOf(b);
   chatId=b.id+"_"+b.requesterId;
-  $("#chatTitle").textContent="Chat with "+(p.name||"neighbour");
+  $("#chatTitle").textContent="Chat with "+handle(p.name,"");
   $("#chatErr").textContent="";$("#chatLog").innerHTML="";
   $("#chatDlg").showModal();
   try{
@@ -543,6 +808,101 @@ function jumpToHash(){
   setTimeout(()=>el2.classList.remove("flash"),2500); return true;
 }
 
+/* ---------------- Reporting ---------------- */
+let reportTarget=null;
+function openReport(b){
+  reportTarget=b;
+  $("#reportTitle").textContent=`Report "${b.title}"`;
+  $("#reportReasons").innerHTML=REPORT_REASONS.map((r,i)=>`<label><input type="radio" name="reason" value="${esc(r)}"${i===0?" checked":""}><span>${esc(r)}</span></label>`).join("");
+  $("#reportNote").value="";$("#reportErr").textContent="";$("#reportSend").disabled=false;
+  $("#reportBody").style.display="grid";$("#reportDone").style.display="none";
+  $("#reportDlg").showModal();
+}
+$("#reportForm").addEventListener("input",()=>{$("#reportErr").textContent=""});
+$("#reportCancel").addEventListener("click",()=>$("#reportDlg").close());
+$("#reportForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(!reportTarget)return;
+  const b=reportTarget, reason=document.querySelector("input[name=reason]:checked")?.value||"Other", note=$("#reportNote").value.trim();
+  if(reason==="Other"&&!note){$("#reportErr").textContent="Please add a few words about what's wrong.";return}
+  $("#reportSend").disabled=true;
+  try{
+    await api.report(b.id,{bookId:b.id,bookTitle:b.title,ownerId:b.ownerId,ownerName:b.ownerName||"",reporterId:me,reporterName:myName,reason,note,createdAt:Date.now()});
+    $("#reportBody").style.display="none";$("#reportDone").style.display="grid";
+    const wa=ADMIN_WHATSAPP.replace(/\D/g,"");
+    const msg=`Book Swap report: "${b.title}" by ${b.author} (listed by ${handle(b.ownerName,"")}). Reason: ${reason}${note?". "+note:""}`;
+    $("#reportDoneActions").innerHTML=(wa?`<a class="btn primary" style="text-align:center;text-decoration:none;display:grid;place-items:center" href="https://wa.me/${wa}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Also message the admin on WhatsApp</a>`:"")+`<button class="btn ${wa?"ghost":"primary"}" type="button" id="reportClose">Close</button>`;
+    $("#reportClose").onclick=()=>$("#reportDlg").close();
+  }catch(err){
+    console.error(err);$("#reportSend").disabled=false;
+    $("#reportErr").textContent="The report wasn't sent. Check your connection and try again.";
+  }
+});
+
+/* ---------------- Admin ---------------- */
+const clearSwapFor=b=>{
+  // When blocking a listing that's mid-request, free the other book too.
+  const u={};
+  if(b.status==="requested"){u[b.id]={status:"available",requesterId:null,requesterName:null,offeredBookId:null};if(b.offeredBookId&&byId(b.offeredBookId))u[b.offeredBookId]={status:"available",forBookId:null}}
+  if(b.status==="offered"){u[b.id]={status:"available",forBookId:null};const t=byId(b.forBookId);if(t)u[t.id]={status:"available",requesterId:null,requesterName:null,offeredBookId:null}}
+  return u;
+};
+const fmtWhen=t=>new Date(t).toLocaleString(undefined,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"});
+function renderAdmin(){
+  if(!isAdmin)return;
+  const groups={};
+  for(const r of reports){(groups[r.bookId]=groups[r.bookId]||[]).push(r)}
+  const blockedIds=new Set(blockedUsers.map(u=>u.id));
+  const open=Object.entries(groups).sort((a,b)=>Math.max(...b[1].map(r=>r.createdAt))-Math.max(...a[1].map(r=>r.createdAt)));
+  $("#reportList").innerHTML=open.length?open.map(([bid,rs])=>{
+    const b=byId(bid), title=b?b.title:(rs[0].bookTitle||"Removed book"), ownerId=b?b.ownerId:rs[0].ownerId, ownerName=b?b.ownerName:rs[0].ownerName;
+    const state=!b?"This listing has already been removed.":b.blocked?"Blocked.":isHidden(b)?`Hidden automatically (${(b.reportedBy||[]).length} reports).`:"Still visible to everyone.";
+    const btn=(a,l,c)=>`<button class="btn ${c} small" data-admin="${a}" data-book="${esc(bid)}" data-owner="${esc(ownerId||"")}" data-owner-name="${esc(ownerName||"")}">${l}</button>`;
+    return `<div class="adm">
+      <h3>${esc(title)}</h3>
+      <div class="meta">${b?esc(b.author)+" &middot; ":""}Listed by ${esc(handle(ownerName,""))}${blockedIds.has(ownerId)?" (user blocked)":""}</div>
+      <div class="status requested">${rs.length} report${rs.length>1?"s":""} &middot; ${esc(state)}</div>
+      <ul>${rs.map(r=>`<li><strong>${esc(r.reason)}</strong>${r.note?": "+esc(r.note):""} <span class="hint">by ${esc(handle(r.reporterName,""))}, ${fmtWhen(r.createdAt)}</span></li>`).join("")}</ul>
+      <div class="actions">
+        ${b&&!b.blocked?btn("block","Block listing","primary"):""}
+        ${b?btn("keep",b.blocked?"Close reports":"Keep listing","ghost"):btn("keep","Clear reports","ghost")}
+        ${ownerId&&!blockedIds.has(ownerId)&&ownerId!==me?btn("blockuser","Block this user","danger"):""}
+      </div></div>`;
+  }).join(""):`<div class="empty"><h3>No reports</h3><p>When neighbours report a listing, it shows up here.</p></div>`;
+  const blocked=books.filter(b=>b.blocked);
+  $("#blockedList").innerHTML=blocked.length?blocked.map(b=>`<div class="adm"><h3>${esc(b.title)}</h3><div class="meta">${esc(b.author)} &middot; Listed by ${esc(handle(b.ownerName,""))}</div><div class="actions"><button class="btn ghost small" data-admin="unblock" data-book="${esc(b.id)}">Unblock listing</button></div></div>`).join(""):`<p class="hint">No blocked listings.</p>`;
+  $("#blockedUsersList").innerHTML=blockedUsers.length?blockedUsers.map(u=>`<div class="adm"><h3>${esc(handle(u.name,""))}</h3><div class="meta">Blocked ${u.at?fmtWhen(u.at):""}</div><div class="actions"><button class="btn ghost small" data-admin="unblockuser" data-owner="${esc(u.id)}">Unblock user</button></div></div>`).join(""):`<p class="hint">No blocked users.</p>`;
+  const pending=open.filter(([bid])=>{const b=byId(bid);return b&&!b.blocked}).length;
+  const bd=$("#adminBadge");bd.hidden=!pending;bd.textContent=pending;
+}
+document.addEventListener("click",async e=>{
+  const btn=e.target.closest("[data-admin]");if(!btn||!isAdmin)return;
+  const act=btn.dataset.admin, bid=btn.dataset.book, b=bid?byId(bid):null, owner=btn.dataset.owner;
+  const repIds=reports.filter(r=>r.bookId===bid).map(r=>r.id);
+  btn.disabled=true;
+  try{
+    if(act==="block"&&b){
+      await api.adminBatch({...clearSwapFor(b),[b.id]:{...(clearSwapFor(b)[b.id]||{}),blocked:true,blockedAt:Date.now(),reportedBy:[]}},repIds);
+      toast("Listing blocked");
+    }
+    if(act==="keep"){
+      await api.adminBatch(b?{[b.id]:{reportedBy:[]}}:{},repIds); toast(b&&!b.blocked?"Listing kept and reports cleared":"Reports cleared");
+    }
+    if(act==="unblock"&&b){await api.adminBatch({[b.id]:{blocked:false,reportedBy:[]}});toast("Listing unblocked")}
+    if(act==="blockuser"&&owner){
+      const name=handle(btn.dataset.ownerName,"");
+      if(!confirm(`Block ${name}? They won't be able to list or request books, and all their available listings will be blocked.`)){btn.disabled=false;return}
+      const ups={};
+      for(const x of books.filter(x=>x.ownerId===owner&&["available","requested","offered"].includes(x.status)&&!x.blocked)){
+        Object.assign(ups,clearSwapFor(x)); ups[x.id]={...(ups[x.id]||{}),blocked:true,blockedAt:Date.now(),reportedBy:[]};
+      }
+      const allRep=reports.filter(r=>ups[r.bookId]||r.bookId===bid).map(r=>r.id);
+      await api.adminBatch(ups,allRep,{[owner]:{name:btn.dataset.ownerName||"",at:Date.now()}}); toast(name+" is blocked");
+    }
+    if(act==="unblockuser"&&owner){await api.adminBatch({},[],{},[owner]);toast("User unblocked. Unblock their listings separately if needed.")}
+  }catch(err){console.error(err);btn.disabled=false;toast("That didn't go through. Check your connection and try again.")}
+});
+
 /* ---------------- Card actions ---------------- */
 const clearReq={status:"available",requesterId:null,requesterName:null,offeredBookId:null};
 const clearOffer={status:"available",forBookId:null};
@@ -552,7 +912,8 @@ document.addEventListener("click",async e=>{
   const btn=e.target.closest("[data-act]");if(!btn)return;
   const b=byId(btn.dataset.id);if(!b)return;
   const act=btn.dataset.act;
-  if(act==="request"){if(!needName())openSwap(b);return}
+  if(act==="request"){if(amBlocked){toast("Your account is blocked, so you can't request books.");return}if(!needName())openSwap(b);return}
+  if(act==="report"){if(!needName())openReport(b);return}
   if(act==="chat"){openChat(b);return}
   if(act==="share"){shareBook(b);return}
   if(act==="edit"){startEdit(b);return}
@@ -592,7 +953,7 @@ document.addEventListener("click",async e=>{
 /* ---------------- Photo ---------------- */
 let photoData=null;
 $("#photo").addEventListener("change",e=>{
-  const f=e.target.files[0];photoData=null;$("#preview").style.display="none";$("#formErr").textContent="";if(!f)return;
+  const f=e.target.files[0];$("#formErr").textContent="";if(!f)return;photoData=null;$("#preview").style.display="none";
   const img=new Image(),url=URL.createObjectURL(f);
   img.onload=()=>{
     const sc=Math.min(1,360/Math.max(img.width,img.height));
@@ -604,10 +965,116 @@ $("#photo").addEventListener("change",e=>{
   img.src=url;
 });
 
+/* ---------------- ISBN scan + lookup ---------------- */
+const SCANNER_URL="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js";
+function normIsbn(raw){
+  const v=String(raw||"").toUpperCase().replace(/[^0-9X]/g,"");
+  if(/^97[89]\d{10}$/.test(v)){let s=0;for(let i=0;i<12;i++)s+=(+v[i])*(i%2?3:1);return (10-s%10)%10===+v[12]?v:null}
+  if(/^\d{9}[\dX]$/.test(v)){let s=0;for(let i=0;i<10;i++)s+=(v[i]==="X"?10:+v[i])*(10-i);if(s%11)return null;
+    const b="978"+v.slice(0,9);let t=0;for(let i=0;i<12;i++)t+=(+b[i])*(i%2?3:1);return b+((10-t%10)%10)}
+  return null;
+}
+const GENRE_HINTS=[["Children",/juvenile|children|picture book|young adult/i],["Mystery & thriller",/mystery|thriller|detective|crime|suspense/i],
+  ["Science fiction & fantasy",/science fiction|fantasy|dystopia|sci-fi/i],["Romance",/romance|love stor/i],["Biography",/biograph|memoir|autobiograph/i],
+  ["Self-help",/self-help|self help|personal development|motivation|success/i],["Poetry",/poetry|poems/i],["Religion & spirituality",/religio|spiritual|mytholog|hindu|buddh|christian|islam/i],
+  ["Textbook",/textbook|study guide|examination|education/i],["Fiction",/fiction|novel/i],["Non-fiction",/history|science|business|econom|politic|psychology|philosophy|travel/i]];
+const guessGenre=list=>{const t=(list||[]).join(" ");for(const [g,re] of GENRE_HINTS)if(re.test(t))return g;return null};
+async function getJSON(url){
+  const ctl=new AbortController(), timer=setTimeout(()=>ctl.abort(),8000);
+  try{const r=await fetch(url,{signal:ctl.signal});if(!r.ok)throw new Error("http "+r.status);return await r.json()}finally{clearTimeout(timer)}
+}
+async function lookupIsbn(isbn){
+  let found=null;
+  try{
+    const d=await getJSON(`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`);
+    const b=d["ISBN:"+isbn];
+    if(b&&b.title)found={title:b.title+(b.subtitle&&b.title.length<40?": "+b.subtitle:""),author:(b.authors||[]).map(a=>a.name).slice(0,2).join(", "),
+      cover:b.cover?(b.cover.large||b.cover.medium||""):"",genre:guessGenre((b.subjects||[]).map(x=>x.name||x))};
+  }catch(e){console.warn("Open Library",e)}
+  if(!found||!found.cover||!found.author){
+    try{
+      const d=await getJSON(`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`);
+      const v=d.items&&d.items[0]&&d.items[0].volumeInfo;
+      if(v){
+        const g={title:v.title||"",author:(v.authors||[]).slice(0,2).join(", "),
+          cover:((v.imageLinks&&(v.imageLinks.thumbnail||v.imageLinks.smallThumbnail))||"").replace(/^http:/,"https:").replace("&edge=curl",""),
+          genre:guessGenre(v.categories)};
+        found=found?{title:found.title||g.title,author:found.author||g.author,cover:found.cover||g.cover,genre:found.genre||g.genre}:g;
+      }
+    }catch(e){console.warn("Google Books",e)}
+  }
+  return found&&found.title?found:null;
+}
+async function useIsbn(raw){
+  const msg=$("#scanMsg"), isbn=normIsbn(raw);
+  if(!isbn){msg.textContent="That doesn't look like an ISBN. Check the 10 or 13 digits and try again.";return}
+  $("#isbnInput").value=isbn; $("#isbnField").value=isbn;
+  msg.textContent="Looking it up…"; $("#isbnBtn").disabled=true; $("#scanBtn").disabled=true;
+  try{
+    const b=await lookupIsbn(isbn), f=$("#addForm").elements;
+    if(!b){msg.textContent="Couldn't find this book online. Type the details below and add a photo if you like.";f.title.focus();return}
+    f.title.value=b.title.slice(0,120); if(b.author)f.author.value=b.author.slice(0,80);
+    if(b.genre)f.genre.value=b.genre;
+    if(b.cover){photoData=b.cover;$("#preview").src=b.cover;$("#preview").style.display="block"}
+    msg.textContent=b.cover?"Found it! Check the details, then pick condition and lend or give.":"Found the details, but no cover. You can add your own photo.";
+    $("#addForm").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+  }finally{$("#isbnBtn").disabled=false;$("#scanBtn").disabled=false}
+}
+$("#isbnBtn").addEventListener("click",()=>useIsbn($("#isbnInput").value));
+$("#isbnInput").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();useIsbn(e.target.value)}});
+
+let scanner=null, scannerLib=null;
+function loadScanner(){
+  if(scannerLib)return scannerLib;
+  scannerLib=new Promise((res,rej)=>{
+    if(window.__Html5QrcodeLibrary__)return res(window.__Html5QrcodeLibrary__);
+    const sc=document.createElement("script");sc.src=SCANNER_URL;sc.async=true;
+    sc.onload=()=>window.__Html5QrcodeLibrary__?res(window.__Html5QrcodeLibrary__):rej(new Error("lib"));
+    sc.onerror=()=>{scannerLib=null;rej(new Error("lib"))};
+    document.head.appendChild(sc);
+  });
+  return scannerLib;
+}
+async function stopScanner(){
+  const s=scanner; scanner=null;
+  if(s){try{await s.stop()}catch{} try{s.clear()}catch{}}
+}
+async function openScanner(){
+  $("#scanErr").textContent="";$("#scanRegion").innerHTML="";$("#scanDlg").showModal();
+  let lib;
+  try{lib=await loadScanner()}catch{$("#scanErr").textContent="The scanner couldn't load. Check your connection, or type the ISBN instead.";return}
+  if(!$("#scanDlg").open)return;
+  try{
+    const F=lib.Html5QrcodeSupportedFormats;
+    scanner=new lib.Html5Qrcode("scanRegion",{verbose:false,formatsToSupport:[F.EAN_13,F.EAN_8,F.UPC_A],experimentalFeatures:{useBarCodeDetectorIfSupported:true}});
+    let done=false;
+    await scanner.start({facingMode:"environment"},{fps:12,qrbox:(w,h)=>({width:Math.floor(Math.min(w*0.86,340)),height:Math.floor(Math.min(h*0.42,150))}),aspectRatio:1.333},
+      async text=>{
+        if(done)return;
+        const isbn=normIsbn(text);
+        if(!isbn){$("#scanErr").textContent="That's a different barcode. Try the one starting with 978 or 979.";return}
+        done=true; if(navigator.vibrate)navigator.vibrate(60);
+        await stopScanner(); $("#scanDlg").close(); useIsbn(isbn);
+      },()=>{});
+  }catch(e){
+    console.warn(e); await stopScanner();
+    const m=typeof e==="string"?e:String(e&&((e.name||"")+" "+(e.message||"")))||String(e);
+    $("#scanErr").textContent=/NotAllowed|Permission/i.test(m)?"Camera access is blocked. Allow the camera for this site in your browser settings, or type the ISBN instead."
+      :/NotFound|Overconstrained|no camera|Requested device/i.test(m)?"No camera found on this device. Type the ISBN instead."
+      :/secure|https/i.test(m)?"The camera only works on the live https:// site. Type the ISBN instead."
+      :/NotSupported|not supported|streaming not supported/i.test(m)?"This browser can't open the camera. If you came from Instagram or WhatsApp, open the link in Chrome or Safari, or type the ISBN instead."
+      :"The camera couldn't start. Close other apps using it, or type the ISBN instead.";
+  }
+}
+$("#scanBtn").addEventListener("click",openScanner);
+$("#scanClose").addEventListener("click",()=>$("#scanDlg").close());
+$("#scanDlg").addEventListener("close",stopScanner);
+
 /* ---------------- Add / edit ---------------- */
 function resetForm(){
   editingId=null;$("#addForm").reset();photoData=null;$("#preview").style.display="none";
-  $("#formTitle").textContent="Add a book";$("#addBtn").textContent="List this book";$("#cancelEdit").hidden=true;$("#formErr").textContent="";
+  $("#isbnField").value="";$("#isbnInput").value="";$("#scanMsg").textContent="";$("#scanBox").hidden=false;
+  $("#formTitle").textContent="Book details";$("#addBtn").textContent="List this book";$("#cancelEdit").hidden=true;$("#formErr").textContent="";
   const last=store.get("swap-area");if(last)$("#areaInput").value=last;
   syncLend();
 }
@@ -615,7 +1082,8 @@ function startEdit(b){
   showTab("add"); editingId=b.id; const f=$("#addForm").elements;
   f.title.value=b.title;f.author.value=b.author;f.genre.value=b.genre;f.condition.value=b.condition;
   f.mode.value=b.mode;f.lendWeeks.value=String(b.lendWeeks||2);f.area.value=b.area||"";f.note.value=b.note||"";
-  photoData=b.photo||null; if(photoData){$("#preview").src=photoData;$("#preview").style.display="block"}
+  photoData=safeImg(b.photo)||null; if(photoData){$("#preview").src=photoData;$("#preview").style.display="block"}
+  $("#isbnField").value=b.isbn||""; $("#scanBox").hidden=true;
   $("#formTitle").textContent="Edit book";$("#addBtn").textContent="Save changes";$("#cancelEdit").hidden=false;syncLend();
 }
 $("#cancelEdit").addEventListener("click",()=>{resetForm();showTab("mine")});
@@ -623,13 +1091,14 @@ $("#cancelEdit").addEventListener("click",()=>{resetForm();showTab("mine")});
 $("#addForm").addEventListener("submit",async e=>{
   e.preventDefault();
   if(needName())return;
+  if(amBlocked){$("#formErr").textContent="Your account has been blocked by the admin, so you can't list books.";return}
   const fd=new FormData(e.target),err=$("#formErr");
   const title=fd.get("title").trim(),author=fd.get("author").trim(),area=fd.get("area").trim();
   if(!title||!author){err.textContent="Add both a title and an author.";return}
   if(!api){err.textContent="Still connecting. Try again in a moment.";return}
   err.textContent="";$("#addBtn").disabled=true;
   const fields={title,author,genre:fd.get("genre"),condition:fd.get("condition"),mode:fd.get("mode"),
-    lendWeeks:Number(fd.get("lendWeeks"))||2,area,note:fd.get("note").trim(),photo:photoData};
+    lendWeeks:Number(fd.get("lendWeeks"))||2,area,note:fd.get("note").trim(),photo:photoData,isbn:fd.get("isbn")||null};
   try{
     if(area)store.set("swap-area",area);
     if(editingId){
@@ -658,9 +1127,17 @@ window.addEventListener("hashchange",jumpToHash);
     notice("Couldn't connect to the shared shelf, so books are saved on this device only. Check the Firebase settings.");
   }
   me=api.uid; let jumped=false;
+  $("#myId").textContent=me; $("#myIdRow").hidden=false;
+  [isAdmin,amBlocked]=await Promise.all([api.isAdmin(),api.isBlocked()]);
+  if(amBlocked)notice("Your account has been blocked by the admin for breaking the Terms of use. You can still browse, but you can't list or request books.");
+  if(isAdmin){
+    $("#adminTabBtn").hidden=false;
+    api.subscribeReports(r=>{reports=r;render()},()=>toast("Couldn't load reports. Check the admin setup."));
+    api.subscribeBlockedUsers(u=>{blockedUsers=u;render()},()=>{});
+  }
   api.subscribe(list=>{books=list;render();if(!jumped)jumped=jumpToHash()},()=>notice("Lost connection to the shared shelf. Reload the page to reconnect."));
   setInterval(render,60000);
-  if(!myName)askName();
+  if(!validNick(myName)||!termsOk())askName();
 })();
 </script>
 </body>
