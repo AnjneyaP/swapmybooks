@@ -5,9 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F1EBFF" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#140A24" media="(prefers-color-scheme: dark)">
-<title>book swap</title>
+<title>Book Swap: trade books nearby</title>
+<meta name="description" content="Swap the books you've finished for ones you haven't, with people who live near you. Free, no ads, no real names.">
+<link rel="canonical" href="https://bookswap.echoforce.in/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Book Swap">
+<meta property="og:title" content="Book Swap: trade books nearby">
+<meta property="og:description" content="Swap the books you've finished for ones you haven't, with people who live near you. Free, no ads.">
+<meta property="og:url" content="https://bookswap.echoforce.in/">
+<meta property="og:image" content="https://bookswap.echoforce.in/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Book Swap app icon with two books and swap arrows">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Book Swap">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=DM+Sans:opsz,wght@9..40,400..700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -41,6 +59,14 @@ header.top{padding:22px 0 8px}
 .wordmark{font-family:var(--display);font-weight:800;font-stretch:78%;font-size:clamp(3rem,15vw,5.6rem);line-height:.82;letter-spacing:-.04em;margin:0}
 .wordmark .sticker{display:inline-block;font-family:var(--body);font-stretch:100%;font-size:.95rem;font-weight:700;letter-spacing:0;vertical-align:top;margin:.45em 0 0 .3em;background:var(--sun);color:var(--on-accent);border:2.5px solid var(--edge);border-radius:999px;padding:3px 10px;transform:rotate(6deg)}
 .tagline{margin:14px 0 0;color:var(--muted);max-width:38ch;font-size:1.02rem}
+.installbar{display:flex;align-items:center;gap:10px;margin-top:14px;background:var(--surface);border:2.5px solid var(--edge);border-radius:16px;padding:8px 8px 8px 10px;box-shadow:3px 3px 0 var(--edge);max-width:480px}
+.installbar img{border-radius:10px;border:2px solid var(--edge);flex:none}
+.installbar span{flex:1;font-weight:700;font-size:.92rem;line-height:1.25}
+.installbar .btn{flex:0 0 auto;min-height:42px}
+.installx{background:none;border:0;color:var(--muted);font-size:1.05rem;width:40px;height:40px;border-radius:10px;flex:none}
+.iossteps{margin:0;padding-left:22px;display:grid;gap:10px}
+.iossteps li{padding-left:4px}
+.shareicon{display:inline-block;vertical-align:-4px;width:20px;height:20px}
 .hello{background:var(--surface);border:2.5px solid var(--edge);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:.9rem;font-weight:700;white-space:nowrap;box-shadow:3px 3px 0 var(--edge);max-width:46vw;overflow:hidden;text-overflow:ellipsis}
 
 main{padding:14px 0 calc(var(--bar) + 40px + env(safe-area-inset-bottom,0px))}
@@ -205,6 +231,12 @@ footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0p
       <button class="hello" id="helloBtn" hidden></button>
     </div>
     <p class="tagline">Trade the books you've finished for ones you haven't, with people who live near you.</p>
+    <div class="installbar" id="installBar" hidden>
+      <img src="icons/icon-192.png" alt="" width="40" height="40">
+      <span>Get Book Swap on your home screen</span>
+      <button class="btn primary small" type="button" id="installBtn">Install</button>
+      <button class="installx" type="button" id="installX" aria-label="Hide install suggestion">✕</button>
+    </div>
   </div>
 </header>
 
@@ -302,6 +334,18 @@ footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0p
   <button role="tab" data-tab="admin" aria-selected="false" id="adminTabBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/></svg>Admin<span class="badge" id="adminBadge" hidden></span></button>
 </nav>
 
+<dialog id="iosDlg">
+  <div class="dlg">
+    <h3>Add to your home screen</h3>
+    <ol class="iossteps">
+      <li>Open this page in <strong>Safari</strong>. If you came from WhatsApp or Instagram, tap the ⋯ menu and choose "Open in Safari" first.</li>
+      <li>Tap the <strong>Share</strong> button <svg class="shareicon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 8l5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg> at the bottom of the screen.</li>
+      <li>Scroll down and tap <strong>Add to Home Screen</strong>, then tap <strong>Add</strong>.</li>
+    </ol>
+    <div class="actions"><button class="btn primary" type="button" id="iosClose">Got it</button></div>
+  </div>
+</dialog>
+
 <dialog id="scanDlg">
   <div class="dlg">
     <h3>Scan the barcode</h3>
@@ -349,6 +393,7 @@ footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0p
     <label class="agree" id="agreeRow"><input type="checkbox" id="agreeBox"><span>I've read and agree to the <button type="button" class="linkbtn" data-terms>Terms of use</button>. Swaps are between neighbours, and I'm responsible for the books I lend, give and borrow.</span></label>
     <div class="err" id="nameErr"></div>
     <p class="myid" id="myIdRow" hidden>Your user ID: <code id="myId"></code> <button type="button" class="linkbtn" id="copyId">Copy</button></p>
+    <p class="myid" id="deleteRow" hidden><button type="button" class="linkbtn" id="deleteMe" style="color:var(--bad)">Delete my data</button> &nbsp; <a href="privacy.html" style="color:inherit">Privacy policy</a></p>
     <div class="actions"><button class="btn primary" type="submit">Save and continue</button></div>
   </form>
 </dialog>
@@ -464,6 +509,7 @@ async function makeFirebaseApi(){
     },
     sendMessage(chatId,msg){return fs.updateDoc(fs.doc(db,"chats",chatId),{messages:fs.arrayUnion(msg)})},
     async isAdmin(){try{return (await fs.getDoc(fs.doc(db,"admins",uid))).exists()}catch{return false}},
+    async deleteSelf(){try{await auth.currentUser.delete()}catch(e){console.warn("auth delete",e)}},
     async isBlocked(){try{return (await fs.getDoc(fs.doc(db,"blockedUsers",uid))).exists()}catch{return false}},
     report(bookId,data){
       const b=fs.writeBatch(db);
@@ -512,6 +558,7 @@ function makeLocalApi(){
       if(chatL&&chatL.chatId===chatId)chatL.cb(c[chatId].messages);
     },
     async isAdmin(){return rj("swap-demo-admins",[]).includes(uid)},
+    async deleteSelf(){store.set("swap-demo-uid","")},
     async isBlocked(){return rj("swap-demo-blockedusers",[]).some(x=>x.id===uid)},
     async report(bookId,data){
       const r=rj("swap-demo-reports",[]).filter(x=>x.id!==bookId+"_"+uid); r.push({id:bookId+"_"+uid,...data}); wj("swap-demo-reports",r); repL(r);
@@ -717,6 +764,29 @@ async function syncMyNick(){
   }
 }
 $("#helloBtn").addEventListener("click",askName);
+$("#deleteMe").addEventListener("click",async()=>{
+  if(!confirm("Delete your data? This removes all your listings, takes your nickname off your swaps, and signs you out of this device. It can't be undone."))return;
+  const btn=$("#deleteMe"); btn.disabled=true;
+  try{
+    // 1. Cancel open requests involving my books, then remove my listings.
+    for(const b of books.filter(x=>x.ownerId===me)){
+      const u=clearSwapFor(b); delete u[b.id];
+      if(Object.keys(u).length){try{await api.commit(u)}catch(e){console.warn(e)}}
+      await api.remove(b.id);
+    }
+    // 2. On other people's books, cancel my pending requests and remove my nickname.
+    for(const b of books.filter(x=>x.requesterId===me&&x.ownerId!==me)){
+      try{
+        if(b.status==="requested")await api.commit({[b.id]:{status:"available",requesterId:null,requesterName:null,offeredBookId:null}});
+        else await api.commit({[b.id]:{requesterName:""}});
+      }catch(e){console.warn(e)}
+    }
+    await api.deleteSelf();
+    for(const k of ["swap-name","swap-terms","swap-area"])try{localStorage.removeItem(k)}catch{}
+    $("#nameDlg").close(); alert("Your data has been deleted. You can close the app now.");
+    location.reload();
+  }catch(e){console.error(e);btn.disabled=false;toast("Couldn't delete everything. Check your connection and try again.")}
+});
 $("#copyId").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(me);toast("ID copied")}catch{toast("Select the ID and copy it")}});
 $("#nameForm").addEventListener("submit",e=>{
   const v=cleanNick($("#nameInput").value);
@@ -902,6 +972,26 @@ document.addEventListener("click",async e=>{
     if(act==="unblockuser"&&owner){await api.adminBatch({},[],{},[owner]);toast("User unblocked. Unblock their listings separately if needed.")}
   }catch(err){console.error(err);btn.disabled=false;toast("That didn't go through. Check your connection and try again.")}
 });
+
+/* ---------------- Install app ---------------- */
+let installEvt=null;
+const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+const isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const installHiddenRecently=()=>{const t=+(store.get("swap-install-hidden")||0);return Date.now()-t<30*DAY};
+function offerInstall(){if(!isStandalone()&&!installHiddenRecently())$("#installBar").hidden=false}
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e;offerInstall()});
+window.addEventListener("appinstalled",()=>{$("#installBar").hidden=true;installEvt=null;toast("Installed! Open Book Swap from your home screen.")});
+if(isIOS)offerInstall();
+$("#installBtn").addEventListener("click",async()=>{
+  if(installEvt){
+    installEvt.prompt();
+    try{const c=await installEvt.userChoice;if(c&&c.outcome==="accepted")$("#installBar").hidden=true}catch{}
+    installEvt=null;
+  }else if(isIOS){$("#iosDlg").showModal()}
+  else{toast("Use your browser's menu and choose \"Install app\" or \"Add to Home screen\".")}
+});
+$("#installX").addEventListener("click",()=>{$("#installBar").hidden=true;store.set("swap-install-hidden",String(Date.now()))});
+$("#iosClose").addEventListener("click",()=>$("#iosDlg").close());
 
 /* ---------------- Card actions ---------------- */
 const clearReq={status:"available",requesterId:null,requesterName:null,offeredBookId:null};
@@ -1127,7 +1217,7 @@ window.addEventListener("hashchange",jumpToHash);
     notice("Couldn't connect to the shared shelf, so books are saved on this device only. Check the Firebase settings.");
   }
   me=api.uid; let jumped=false;
-  $("#myId").textContent=me; $("#myIdRow").hidden=false;
+  $("#myId").textContent=me; $("#myIdRow").hidden=false; $("#deleteRow").hidden=false;
   [isAdmin,amBlocked]=await Promise.all([api.isAdmin(),api.isBlocked()]);
   if(amBlocked)notice("Your account has been blocked by the admin for breaking the Terms of use. You can still browse, but you can't list or request books.");
   if(isAdmin){
@@ -1137,6 +1227,7 @@ window.addEventListener("hashchange",jumpToHash);
   }
   api.subscribe(list=>{books=list;render();if(!jumped)jumped=jumpToHash()},()=>notice("Lost connection to the shared shelf. Reload the page to reconnect."));
   setInterval(render,60000);
+  if("serviceWorker" in navigator&&location.protocol==="https:"||location.hostname==="localhost")navigator.serviceWorker?.register("sw.js").catch(e=>console.warn("SW",e));
   if(!validNick(myName)||!termsOk())askName();
 })();
 </script>
