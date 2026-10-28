@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Neighbourhood Book Swap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF1F4; --surface:#FFFFFF; --ink:#1B2336; --muted:#5B6478; --line:#D5DAE2;
+  --shelf:#2E3A57; --accent:#E3A51F; --accent-ink:#1B2336; --ok:#2F7D5B; --warn:#B4531B; --bad:#B42318; --field:#F7F8FA;
+  --mine:#E6EEF9;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{--bg:#141925; --surface:#1E2433; --ink:#ECEFF5; --muted:#A2AABB; --line:#323A4D;
+    --shelf:#0C1019; --accent:#F0B83A; --accent-ink:#141925; --ok:#5FC495; --warn:#F08A4E; --bad:#FF7A6E; --field:#262D3E; --mine:#2B3753;}
+}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none!important}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:18px/1.55 Figtree,system-ui,-apple-system,"Segoe UI",sans-serif}
+h1,h2,h3{font-family:"Young Serif",Georgia,"Times New Roman",serif;font-weight:400;margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+img{max-width:100%}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+
+header.top{background:var(--shelf);color:#F4F6FA;padding:26px 0 0}
+.toprow{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+header.top h1{font-size:clamp(1.9rem,6vw,3rem);line-height:1.05}
+header.top p{margin:8px 0 20px;color:#C5CCDA;max-width:52ch}
+.hello{background:rgba(255,255,255,.12);border:0;color:#F4F6FA;border-radius:999px;padding:8px 14px;font-size:.9rem;white-space:nowrap}
+.shelf-edge{height:14px;background:linear-gradient(#5A4632,#3E2F21);box-shadow:0 6px 10px -6px rgba(0,0,0,.5)}
+nav.tabs{display:flex;gap:4px}
+nav.tabs button{background:transparent;border:0;color:#C5CCDA;padding:12px 16px;border-radius:12px 12px 0 0;font-weight:600;position:relative}
+nav.tabs button[aria-selected="true"]{background:var(--bg);color:var(--ink)}
+.badge{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:.8rem;font-weight:700;margin-left:6px}
+.badge[hidden]{display:none}
+
+main{padding:22px 0 60px}
+.notice{background:var(--surface);border:1px solid var(--line);border-left:5px solid var(--accent);padding:12px 16px;border-radius:10px;margin-bottom:18px;color:var(--muted)}
+.alert{background:var(--surface);border:2px solid var(--accent);border-radius:12px;padding:12px 16px;margin-bottom:18px;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.alert strong{font-size:1.02rem}
+.rule{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:18px;font-size:.95rem}
+
+.controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
+.controls input,.controls select{background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-height:50px}
+.controls input{flex:1 1 100%}
+.controls select{flex:1 1 150px;min-width:0}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:22px}
+.book{display:flex;flex-direction:column;background:var(--surface);border-radius:6px 14px 14px 6px;overflow:hidden;border:1px solid var(--line);scroll-margin-top:20px}
+.book.flash{outline:4px solid var(--accent);outline-offset:3px}
+.cover{position:relative;aspect-ratio:3/3.2;padding:46px 16px 16px 26px;color:#fff;display:flex;flex-direction:column;justify-content:space-between}
+.cover::before{content:"";position:absolute;left:0;top:0;bottom:0;width:12px;background:rgba(0,0,0,.22);box-shadow:inset -2px 0 0 rgba(255,255,255,.18)}
+.cover.photo{padding:0}
+.cover.photo img{width:100%;height:100%;object-fit:cover;display:block}
+.cover .t{font-family:"Young Serif",Georgia,serif;font-size:1.3rem;line-height:1.2;overflow-wrap:anywhere}
+.cover .a{font-size:.9rem;opacity:.9}
+.tag{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.94);color:#1B2336;font-size:.8rem;font-weight:700;padding:3px 10px;border-radius:999px}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:7px;flex:1}
+.ttl{font-weight:700;line-height:1.3}
+.meta{font-size:.9rem;color:var(--muted)}
+.swapbox{font-size:.9rem;background:var(--field);border-radius:8px;padding:8px 10px}
+.status{font-size:.92rem;font-weight:700}
+.status.available{color:var(--ok)} .status.requested,.status.offered{color:var(--warn)} .status.out,.status.given{color:var(--muted)}
+.due{font-size:.9rem;font-weight:600;color:var(--muted)}
+.due.over{color:var(--bad)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;padding-top:4px}
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;min-height:50px;flex:1 1 auto}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;border:1.5px solid var(--line)}
+.btn.danger{background:transparent;color:var(--warn);border:1.5px solid var(--line)}
+.btn.small{min-height:44px;padding:8px 12px;font-size:.92rem;flex:0 1 auto}
+.btn:disabled{opacity:.5;cursor:default}
+
+.empty{text-align:center;padding:44px 16px;color:var(--muted);grid-column:1/-1}
+.empty h3{color:var(--ink);font-size:1.4rem;margin-bottom:6px}
+section h2{font-size:1.6rem;margin:6px 0 14px}
+section + section{margin-top:40px}
+
+form.add{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;max-width:640px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
+form.add > *,.row > *,label.f > *{min-width:0}
+select{max-width:100%;text-overflow:ellipsis}
+form.add h2{font-size:1.5rem}
+label.f,.f{display:grid;gap:6px;font-weight:600}
+.hint{font-weight:400;color:var(--muted);font-size:.9rem}
+form.add input[type=text],form.add select,form.add textarea,dialog input[type=text],dialog textarea{background:var(--field);border:1.5px solid var(--line);border-radius:10px;padding:12px;min-height:50px;width:100%}
+form.add textarea{min-height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.choice{display:flex;gap:10px;flex-wrap:wrap}
+.choice label{flex:1 1 140px;border:1.5px solid var(--line);border-radius:10px;padding:12px;display:flex;gap:10px;align-items:center;font-weight:600;background:var(--field)}
+.choice input{width:22px;height:22px;accent-color:var(--accent)}
+.preview{max-width:140px;border-radius:8px;display:none}
+.err{color:var(--warn);font-weight:600;min-height:1.2em}
+
+dialog{border:0;border-radius:18px;padding:0;background:var(--surface);color:var(--ink);width:min(520px,94vw);max-height:88vh}
+dialog::backdrop{background:rgba(10,14,24,.55)}
+.dlg{padding:22px;display:grid;gap:14px}
+.dlg h3{font-size:1.4rem}
+.pick{display:grid;gap:10px;max-height:46vh;overflow:auto}
+.pick label{display:flex;gap:12px;align-items:center;border:1.5px solid var(--line);border-radius:12px;padding:12px;background:var(--field)}
+.pick input{width:22px;height:22px;accent-color:var(--accent);flex:none}
+
+.chatlog{display:flex;flex-direction:column;gap:8px;height:min(46vh,380px);overflow-y:auto;background:var(--field);border-radius:12px;padding:12px}
+.msg{max-width:82%;padding:8px 12px;border-radius:14px;background:var(--surface);border:1px solid var(--line);align-self:flex-start;overflow-wrap:anywhere}
+.msg.me{align-self:flex-end;background:var(--mine);border-color:transparent}
+.msg .w{font-size:.78rem;color:var(--muted);display:block}
+.chatin{display:flex;gap:8px}
+.chatin input{flex:1}
+.chatin .btn{flex:0 0 auto}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;max-width:90vw;z-index:10}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+@media (max-width:520px){.row{grid-template-columns:minmax(0,1fr)} .grid{grid-template-columns:minmax(0,1fr);gap:14px} .book{flex-direction:row} .cover{width:118px;flex:none;aspect-ratio:auto;min-height:190px;padding:40px 10px 12px 20px} .cover::before{width:9px} .cover .t{font-size:1rem} .cover .a{font-size:.8rem} .tag{top:8px;right:8px;font-size:.74rem} .body{min-width:0} nav.tabs button{padding:10px 11px;font-size:.95rem} .btn{font-size:.95rem;padding:10px 12px}}
+@media (max-width:360px){.cover{width:96px}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <div class="toprow">
+      <h1>Neighbourhood Book Swap</h1>
+      <button class="hello" id="helloBtn" hidden></button>
+    </div>
+    <p>Bring a book, take a book. Every book you get is swapped for one of yours.</p>
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="browse" aria-selected="true">Browse</button>
+      <button role="tab" data-tab="mine" aria-selected="false">My books<span class="badge" id="mineBadge" hidden></span></button>
+      <button role="tab" data-tab="add" aria-selected="false">Add a book</button>
+    </nav>
+  </div>
+</header>
+<div class="shelf-edge" aria-hidden="true"></div>
+
+<main class="wrap">
+  <div id="notice" class="notice" hidden></div>
+  <div id="alert" class="alert" hidden></div>
+
+  <div id="tab-browse">
+    <div class="rule"><strong>How swapping works:</strong> when you ask for a book, you offer one of your own listed books in return. If the owner accepts, you both hand over your books.</div>
+    <div class="controls">
+      <input id="q" type="search" placeholder="Search by title or author" aria-label="Search by title or author">
+      <select id="fGenre" aria-label="Genre"></select>
+      <select id="fArea" aria-label="Area"></select>
+      <select id="fStatus" aria-label="Availability">
+        <option value="available">Available now</option>
+        <option value="all">All books</option>
+      </select>
+    </div>
+    <div id="grid" class="grid"></div>
+  </div>
+
+  <div id="tab-mine" hidden>
+    <section id="secAnswer" hidden><h2>Needs your answer</h2><div id="gridAnswer" class="grid"></div></section>
+    <section><h2>Books I've listed</h2><div id="gridListed" class="grid"></div></section>
+    <section><h2>Books I've asked for or received</h2><div id="gridBorrowed" class="grid"></div></section>
+  </div>
+
+  <div id="tab-add" hidden>
+    <form class="add" id="addForm" novalidate>
+      <h2 id="formTitle">Add a book</h2>
+      <label class="f">Title<input type="text" name="title" maxlength="120" required></label>
+      <label class="f">Author<input type="text" name="author" maxlength="80" required></label>
+      <div class="row">
+        <label class="f">Genre<select name="genre" id="genreSel"></select></label>
+        <label class="f">Condition
+          <select name="condition"><option>Good</option><option>Fair</option><option>Worn</option></select>
+        </label>
+      </div>
+      <div class="f">Do you want it back?
+        <div class="choice">
+          <label><input type="radio" name="mode" value="lend" checked> Lend it</label>
+          <label><input type="radio" name="mode" value="give"> Give it away</label>
+        </div>
+      </div>
+      <label class="f" id="lendRow">Lend for
+        <select name="lendWeeks"><option value="1">1 week</option><option value="2" selected>2 weeks</option><option value="4">1 month</option><option value="8">2 months</option></select>
+      </label>
+      <label class="f">Area or building <span class="hint">Helps neighbours find books nearby, e.g. "Tower B" or "Baner"</span>
+        <input type="text" name="area" id="areaInput" maxlength="40" list="areaList">
+        <datalist id="areaList"></datalist>
+      </label>
+      <label class="f">Pickup details <span class="hint">Where and when people can collect it, e.g. "Block C gate, evenings"</span>
+        <textarea name="note" maxlength="240"></textarea>
+      </label>
+      <label class="f">Photo of the cover <span class="hint">Optional</span>
+        <input type="file" id="photo" accept="image/*">
+      </label>
+      <img id="preview" class="preview" alt="Cover preview">
+      <div class="err" id="formErr" role="alert"></div>
+      <div class="actions">
+        <button class="btn primary" type="submit" id="addBtn">List this book</button>
+        <button class="btn ghost" type="button" id="cancelEdit" hidden>Cancel editing</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<dialog id="nameDlg">
+  <form class="dlg" method="dialog" id="nameForm">
+    <h3>Welcome to the swap</h3>
+    <p class="hint" style="margin:0">What should neighbours call you? Use a name they'll recognise, like "Priya, Flat 402".</p>
+    <input type="text" id="nameInput" maxlength="40" aria-label="Your name" required>
+    <div class="err" id="nameErr"></div>
+    <div class="actions"><button class="btn primary" type="submit">Save my name</button></div>
+  </form>
+</dialog>
+
+<dialog id="swapDlg">
+  <div class="dlg">
+    <h3 id="swapTitle">Choose a book to offer</h3>
+    <p class="hint" id="swapHint" style="margin:0"></p>
+    <div class="pick" id="swapPick"></div>
+    <div class="err" id="swapErr"></div>
+    <div class="actions" id="swapActions"></div>
+  </div>
+</dialog>
+
+<dialog id="chatDlg">
+  <div class="dlg">
+    <h3 id="chatTitle">Chat</h3>
+    <p class="hint" style="margin:0" id="chatHint">Only the two of you can see these messages. Agree on a time and place to swap.</p>
+    <div class="chatlog" id="chatLog" aria-live="polite"></div>
+    <form class="chatin" id="chatForm">
+      <input type="text" id="chatInput" maxlength="500" placeholder="Type a message" aria-label="Message">
+      <button class="btn primary" type="submit">Send</button>
+    </form>
+    <div class="err" id="chatErr"></div>
+    <div class="actions"><button class="btn ghost" id="chatClose">Close</button></div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script type="module">
+/* =========================================================
+   SETUP: paste your Firebase web config here.
+   Until you do, the app runs in demo mode (saved on this device only).
+   ========================================================= */
+const FIREBASE_CONFIG = {
+  
+  apiKey: "AIzaSyDj0rvXdxUWgV-2-NKWD_wJqahLPEL8VTg",
+  authDomain: "book-swap-f9983.firebaseapp.com",
+  projectId: "book-swap-f9983",
+  storageBucket: "book-swap-f9983.firebasestorage.app",
+  messagingSenderId: "471772465053",
+  appId: "1:471772465053:web:5a8b71d6695a551f711174"
+};
+
+const GENRES=["Fiction","Non-fiction","Children","Mystery & thriller","Romance","Science fiction & fantasy","Biography","Self-help","Textbook","Poetry","Religion & spirituality","Other"];
+const COVERS=["#2F6B5E","#8A3B3B","#34507F","#7A5A1E","#5B3F74","#2D6E8A","#9A4E2A","#3E5E2E","#6B2F4F","#44506B"];
+const DAY=86400000;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const hash=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))|0;return Math.abs(h)};
+const store={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v)}catch{}}};
+const fmtDate=t=>new Date(t).toLocaleDateString(undefined,{day:"numeric",month:"short"});
+const areaKey=a=>(a||"").trim().toLowerCase();
+
+let books=[], me=null, myName=store.get("swap-name")||"", editingId=null;
+
+/* ---------------- Data layer ----------------
+   commit(updates, checks): updates = {bookId: patch}, checks = {bookId: expectedStatus}.
+   Fails with "stale" if a checked book changed status meanwhile. */
+let api;
+const useFirebase = FIREBASE_CONFIG.apiKey && !FIREBASE_CONFIG.apiKey.startsWith("PASTE");
+
+async function makeFirebaseApi(){
+  const V="10.12.2";
+  const {initializeApp}=await import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`);
+  const {getAuth,signInAnonymously,onAuthStateChanged}=await import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`);
+  const fs=await import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`);
+  const app=initializeApp(FIREBASE_CONFIG);
+  const auth=getAuth(app); const db=fs.getFirestore(app);
+  const uid=await new Promise((res,rej)=>{onAuthStateChanged(auth,u=>{if(u)res(u.uid)});signInAnonymously(auth).catch(rej)});
+  const col=fs.collection(db,"books");
+  return {
+    uid,
+    subscribe(cb,onErr){fs.onSnapshot(col,s=>cb(s.docs.map(d=>({id:d.id,...d.data()}))),onErr)},
+    add(data){return fs.addDoc(col,data)},
+    edit(id,patch){return fs.updateDoc(fs.doc(db,"books",id),patch)},
+    remove(id){return fs.deleteDoc(fs.doc(db,"books",id))},
+    commit(updates,checks={}){
+      return fs.runTransaction(db,async tx=>{
+        for(const [id,st] of Object.entries(checks)){
+          const s=await tx.get(fs.doc(db,"books",id));
+          if(!s.exists()||s.data().status!==st)throw new Error("stale");
+        }
+        for(const [id,p] of Object.entries(updates))tx.update(fs.doc(db,"books",id),p);
+      });
+    },
+    async openChat(chatId,participants,cb,onErr){
+      const ref=fs.doc(db,"chats",chatId);
+      await fs.setDoc(ref,{participants},{merge:true});
+      return fs.onSnapshot(ref,s=>cb((s.data()||{}).messages||[]),onErr);
+    },
+    sendMessage(chatId,msg){return fs.updateDoc(fs.doc(db,"chats",chatId),{messages:fs.arrayUnion(msg)})}
+  };
+}
+
+function makeLocalApi(){
+  const K="swap-demo-books",KC="swap-demo-chats"; let listener=()=>{}, chatL=null;
+  const read=()=>{try{return JSON.parse(store.get(K)||"[]")}catch{return []}};
+  const write=a=>{store.set(K,JSON.stringify(a));listener(a)};
+  const readC=()=>{try{return JSON.parse(store.get(KC)||"{}")}catch{return {}}};
+  let uid=store.get("swap-demo-uid"); if(!uid){uid="u"+Math.random().toString(36).slice(2);store.set("swap-demo-uid",uid)}
+  return {
+    uid,
+    subscribe(cb){listener=cb;cb(read())},
+    async add(d){write([...read(),{id:"b"+Date.now()+Math.floor(Math.random()*1000),...d}])},
+    async edit(id,p){write(read().map(b=>b.id===id?{...b,...p}:b))},
+    async remove(id){write(read().filter(b=>b.id!==id))},
+    async commit(updates,checks={}){
+      const a=read();
+      for(const [id,st] of Object.entries(checks)){const b=a.find(x=>x.id===id);if(!b||b.status!==st)throw new Error("stale")}
+      write(a.map(b=>updates[b.id]?{...b,...updates[b.id]}:b));
+    },
+    async openChat(chatId,participants,cb){
+      const c=readC(); c[chatId]=c[chatId]||{participants,messages:[]}; store.set(KC,JSON.stringify(c));
+      chatL={chatId,cb}; cb(c[chatId].messages); return ()=>{chatL=null};
+    },
+    async sendMessage(chatId,msg){
+      const c=readC(); c[chatId].messages.push(msg); store.set(KC,JSON.stringify(c));
+      if(chatL&&chatL.chatId===chatId)chatL.cb(c[chatId].messages);
+    }
+  };
+}
+
+/* ---------------- UI helpers ---------------- */
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),2800)}
+function notice(m){const n=$("#notice");n.hidden=!m;n.textContent=m||""}
+const byId=id=>books.find(b=>b.id===id);
+const nm=(name,id)=>id===me?"you":(name||"A neighbour");
+const partnerOf=b=>b.ownerId===me?{id:b.requesterId,name:b.requesterName}:{id:b.ownerId,name:b.ownerName};
+
+function statusText(b){
+  if(b.status==="available")return b.mode==="give"?"Available to swap (keep)":"Available to swap (lend)";
+  if(b.status==="requested")return "Requested by "+nm(b.requesterName,b.requesterId);
+  if(b.status==="offered"){const t=byId(b.forBookId);return "Offered in a swap"+(t?` for "${t.title}"`:"")}
+  if(b.status==="out")return "Lent to "+nm(b.requesterName,b.requesterId);
+  if(b.status==="given")return "Given to "+nm(b.requesterName,b.requesterId);
+  return "";
+}
+function dueHtml(b){
+  if(b.status!=="out"||!b.dueAt)return "";
+  const days=Math.ceil((b.dueAt-Date.now())/DAY);
+  if(days<0)return `<div class="due over">Overdue since ${fmtDate(b.dueAt)}</div>`;
+  return `<div class="due">Return by ${fmtDate(b.dueAt)}${days<=2?` (${days===0?"today":days+" day"+(days>1?"s":"")+" left"})`:""}</div>`;
+}
+const inSwap=b=>["requested","out","given"].includes(b.status)&&b.requesterId&&(b.ownerId===me||b.requesterId===me);
+
+function actionsFor(b){
+  const mine=b.ownerId===me, out=[];
+  const B=(act,label,cls="primary")=>`<button class="btn ${cls}" data-act="${act}" data-id="${b.id}">${label}</button>`;
+  if(mine){
+    if(b.status==="requested"){out.push(B("accept","Accept swap & hand over"));out.push(B("decline","Decline","ghost"))}
+    else if(b.status==="offered"){out.push(B("withdraw","Withdraw my offer","ghost"))}
+    else if(b.status==="out"){out.push(B("returned","Mark returned"))}
+    if(b.status==="available"){out.push(B("edit","Edit","ghost"));out.push(B("share","Share","ghost"))}
+    if(b.status==="available"||b.status==="given")out.push(B("remove","Remove","danger"));
+  }else{
+    if(b.status==="available"){out.push(B("request","Swap for this book"));out.push(B("share","Share","ghost"))}
+    else if(b.status==="requested"&&b.requesterId===me)out.push(B("cancel","Cancel request","ghost"));
+  }
+  if(inSwap(b)&&b.status!=="given"||inSwap(b)&&b.status==="given"&&Date.now()-(b.swappedAt||0)<14*DAY){
+    out.push(B("chat","Chat with "+esc((partnerOf(b).name||"neighbour").split(",")[0]),"ghost"));
+  }
+  return out.join("");
+}
+
+function swapInfo(b){
+  if(b.status==="requested"){const o=byId(b.offeredBookId);if(o)return `<div class="swapbox">In exchange: <strong>${esc(o.title)}</strong> by ${esc(o.author)} (${esc(o.condition)})</div>`}
+  if((b.status==="out"||b.status==="given")&&b.swapWithId){const o=byId(b.swapWithId);if(o)return `<div class="swapbox">Swapped for <strong>${esc(o.title)}</strong></div>`}
+  return "";
+}
+
+function card(b,withId=false){
+  const color=COVERS[hash(b.title+b.author)%COVERS.length];
+  const tag=b.mode==="give"?"Keep":"Lend";
+  const cover=b.photo
+    ?`<div class="cover photo"><img src="${esc(b.photo)}" alt="Cover of ${esc(b.title)}" loading="lazy"><span class="tag">${tag}</span></div>`
+    :`<div class="cover" style="background:${color}"><span class="tag">${tag}</span><div class="t">${esc(b.title)}</div><div class="a">${esc(b.author)}</div></div>`;
+  const lendInfo=b.mode==="lend"&&b.status==="available"?` &middot; lent for ${b.lendWeeks==4?"1 month":b.lendWeeks==8?"2 months":(b.lendWeeks||2)+" week"+((b.lendWeeks||2)>1?"s":"")}`:"";
+  return `<article class="book"${withId?` id="book-${esc(b.id)}"`:""} data-book="${esc(b.id)}">${cover}<div class="body">
+    <div class="ttl">${esc(b.title)}</div>
+    <div class="meta">${esc(b.author)} &middot; ${esc(b.genre)} &middot; ${esc(b.condition)}${lendInfo}</div>
+    <div class="meta">Shared by ${esc(nm(b.ownerName,b.ownerId))}${b.area?" in "+esc(b.area):""}</div>
+    ${b.note?`<div class="meta">Pickup: ${esc(b.note)}</div>`:""}
+    ${swapInfo(b)}
+    <div class="status ${b.status}">${esc(statusText(b))}</div>
+    ${dueHtml(b)}
+    <div class="actions">${actionsFor(b)}</div>
+  </div></article>`;
+}
+const empty=(t,p,btn)=>`<div class="empty"><h3>${t}</h3><p>${p}</p>${btn?`<button class="btn primary" data-goto="add">List a book</button>`:""}</div>`;
+
+function refreshAreas(){
+  const seen=new Map();
+  for(const b of books){const k=areaKey(b.area);if(k&&!seen.has(k))seen.set(k,b.area.trim())}
+  const areas=[...seen.values()].sort((a,b)=>a.localeCompare(b));
+  const sel=$("#fArea"),cur=sel.value||"all";
+  sel.innerHTML=`<option value="all">All areas</option>`+areas.map(a=>`<option value="${esc(areaKey(a))}">${esc(a)}</option>`).join("");
+  sel.value=[...sel.options].some(o=>o.value===cur)?cur:"all";
+  $("#areaList").innerHTML=areas.map(a=>`<option value="${esc(a)}">`).join("");
+}
+
+function render(){
+  refreshAreas();
+  const q=$("#q").value.trim().toLowerCase(), g=$("#fGenre").value, s=$("#fStatus").value, ar=$("#fArea").value;
+  const sorted=[...books].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
+  const shown=sorted.filter(b=>(!q||(b.title+" "+b.author).toLowerCase().includes(q))&&(g==="all"||b.genre===g)&&(ar==="all"||areaKey(b.area)===ar)&&(s==="all"?b.status!=="given":b.status==="available"));
+  $("#grid").innerHTML=shown.length?shown.map(b=>card(b,true)).join(""):
+    books.length?empty("No matching books","Try another search, or choose \"All books\" and \"All areas\".",false):empty("The shelf is empty","List a book first. You'll need one to swap anyway!",true);
+
+  const answer=sorted.filter(b=>b.ownerId===me&&b.status==="requested");
+  const overdueMine=sorted.filter(b=>b.requesterId===me&&b.ownerId!==me&&b.status==="out"&&b.dueAt&&b.dueAt<Date.now());
+  const listed=sorted.filter(b=>b.ownerId===me&&b.status!=="requested");
+  const got=sorted.filter(b=>b.requesterId===me&&b.ownerId!==me);
+  $("#secAnswer").hidden=!answer.length;
+  $("#gridAnswer").innerHTML=answer.map(card).join("");
+  $("#gridListed").innerHTML=listed.length?listed.map(card).join(""):answer.length?empty("Nothing else listed","Your other books will appear here.",false):empty("Nothing listed yet","List a book so you have something to swap.",true);
+  $("#gridBorrowed").innerHTML=got.length?got.map(card).join(""):empty("No swaps yet","Books you ask for will appear here.",false);
+
+  const badgeN=answer.length+overdueMine.length, bd=$("#mineBadge");
+  bd.hidden=!badgeN; bd.textContent=badgeN;
+  const al=$("#alert"), msgs=[];
+  if(answer.length)msgs.push(`${answer.length} swap request${answer.length>1?"s":""} waiting for your answer`);
+  if(overdueMine.length)msgs.push(`${overdueMine.length} borrowed book${overdueMine.length>1?"s are":" is"} overdue`);
+  al.hidden=!msgs.length||!$("#tab-mine").hidden;
+  al.innerHTML=msgs.length?`<strong>${esc(msgs.join(" · "))}</strong><button class="btn primary small" data-goto="mine">See my books</button>`:"";
+
+  const hb=$("#helloBtn");hb.hidden=!myName;hb.textContent="Hi, "+myName.split(",")[0]+" ✎";
+}
+
+/* ---------------- Tabs & filters ---------------- */
+function showTab(n){
+  document.querySelectorAll("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.tab===n)));
+  ["browse","mine","add"].forEach(t=>$("#tab-"+t).hidden=t!==n);
+  if(n!=="add"&&editingId)resetForm();
+  render();window.scrollTo({top:0});
+}
+document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
+$("#fGenre").innerHTML=`<option value="all">All genres</option>`+GENRES.map(g=>`<option>${g}</option>`).join("");
+$("#genreSel").innerHTML=GENRES.map(g=>`<option>${g}</option>`).join("");
+["#q","#fGenre","#fStatus","#fArea"].forEach(s=>$(s).addEventListener("input",render));
+const syncLend=()=>{$("#lendRow").hidden=$("#addForm").elements.mode.value!=="lend"};
+document.querySelectorAll("input[name=mode]").forEach(r=>r.addEventListener("change",syncLend));
+
+/* ---------------- Name ---------------- */
+function askName(){$("#nameInput").value=myName;$("#nameErr").textContent="";$("#nameDlg").showModal()}
+$("#helloBtn").addEventListener("click",askName);
+$("#nameForm").addEventListener("submit",e=>{
+  const v=$("#nameInput").value.trim();
+  if(!v){e.preventDefault();$("#nameErr").textContent="Add a name so neighbours know who you are.";return}
+  myName=v;store.set("swap-name",v);render();toast("Name saved");
+});
+const needName=()=>{if(!myName){askName();return true}return false};
+
+/* ---------------- Swap dialog ---------------- */
+function openSwap(target){
+  const mineAvail=books.filter(b=>b.ownerId===me&&b.status==="available");
+  $("#swapErr").textContent="";
+  if(!mineAvail.length){
+    $("#swapTitle").textContent="List a book first";
+    $("#swapHint").textContent="To get a book, you give one in return. Add one of your books, then come back to swap.";
+    $("#swapPick").innerHTML="";
+    $("#swapActions").innerHTML=`<button class="btn primary" id="goAdd">Add a book</button><button class="btn ghost" id="swapClose">Not now</button>`;
+    $("#goAdd").onclick=()=>{$("#swapDlg").close();showTab("add")};
+  }else{
+    $("#swapTitle").textContent=`Swap for "${target.title}"`;
+    $("#swapHint").textContent="Pick one of your books to give "+(target.ownerName||"the owner")+" in exchange.";
+    $("#swapPick").innerHTML=mineAvail.map((b,i)=>`<label><input type="radio" name="offer" value="${esc(b.id)}" ${i===0?"checked":""}><span><strong>${esc(b.title)}</strong><br><span class="hint">${esc(b.author)} &middot; ${esc(b.condition)} &middot; ${b.mode==="give"?"to keep":"lend"}</span></span></label>`).join("");
+    $("#swapActions").innerHTML=`<button class="btn primary" id="swapSend">Send swap request</button><button class="btn ghost" id="swapClose">Cancel</button>`;
+    $("#swapSend").onclick=async()=>{
+      const offerId=document.querySelector("input[name=offer]:checked")?.value;
+      if(!offerId)return;
+      $("#swapSend").disabled=true;
+      try{
+        await api.commit({
+          [target.id]:{status:"requested",requesterId:me,requesterName:myName,offeredBookId:offerId},
+          [offerId]:{status:"offered",forBookId:target.id}
+        },{[target.id]:"available",[offerId]:"available"});
+        $("#swapDlg").close();toast("Swap request sent. The owner will see it.");
+      }catch(e){
+        $("#swapSend").disabled=false;
+        $("#swapErr").textContent=e.message==="stale"?"Someone else just asked for one of these books. Close and try another.":"The request didn't go through. Check your connection and try again.";
+      }
+    };
+  }
+  $("#swapClose").onclick=()=>$("#swapDlg").close();
+  $("#swapDlg").showModal();
+}
+
+/* ---------------- Chat ---------------- */
+let chatUnsub=null, chatId=null;
+function renderChat(msgs){
+  const log=$("#chatLog");
+  if(!msgs.length){log.innerHTML=`<div class="hint" style="margin:auto;text-align:center">No messages yet. Say hello and suggest a pickup time.</div>`;return}
+  log.innerHTML=msgs.slice().sort((a,b)=>a.at-b.at).map(m=>`<div class="msg ${m.from===me?"me":""}"><span class="w">${m.from===me?"You":esc(m.name||"Neighbour")} &middot; ${new Date(m.at).toLocaleString(undefined,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</span>${esc(m.text)}</div>`).join("");
+  log.scrollTop=log.scrollHeight;
+}
+async function openChat(b){
+  const p=partnerOf(b);
+  chatId=b.id+"_"+b.requesterId;
+  $("#chatTitle").textContent="Chat with "+(p.name||"neighbour");
+  $("#chatErr").textContent="";$("#chatLog").innerHTML="";
+  $("#chatDlg").showModal();
+  try{
+    chatUnsub=await api.openChat(chatId,[b.ownerId,b.requesterId],renderChat,()=>{$("#chatErr").textContent="Chat disconnected. Close and open it again."});
+  }catch(e){console.error(e);$("#chatErr").textContent="Couldn't open the chat. Check your connection and try again."}
+  $("#chatInput").focus();
+}
+$("#chatForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const text=$("#chatInput").value.trim(); if(!text||!chatId)return;
+  $("#chatInput").value="";
+  try{await api.sendMessage(chatId,{from:me,name:myName,text,at:Date.now()})}
+  catch{$("#chatInput").value=text;$("#chatErr").textContent="Message not sent. Check your connection and try again."}
+});
+function closeChat(){if(chatUnsub){chatUnsub();chatUnsub=null}chatId=null}
+$("#chatClose").addEventListener("click",()=>$("#chatDlg").close());
+$("#chatDlg").addEventListener("close",closeChat);
+
+/* ---------------- Share ---------------- */
+async function shareBook(b){
+  const url=location.href.split("#")[0]+"#book-"+b.id;
+  const text=`"${b.title}" by ${b.author} is up for swapping on our Neighbourhood Book Swap.`;
+  if(navigator.share){try{await navigator.share({title:b.title,text,url});return}catch(e){if(e.name==="AbortError")return}}
+  window.open("https://wa.me/?text="+encodeURIComponent(text+" "+url),"_blank","noopener");
+}
+function jumpToHash(){
+  const m=location.hash.match(/^#book-(.+)$/); if(!m)return false;
+  const el=document.getElementById("book-"+m[1]); if(!el)return false;
+  $("#fStatus").value="all"; $("#q").value=""; $("#fGenre").value="all"; $("#fArea").value="all"; render();
+  const el2=document.getElementById("book-"+m[1]); el2.scrollIntoView({block:"center"}); el2.classList.add("flash");
+  setTimeout(()=>el2.classList.remove("flash"),2500); return true;
+}
+
+/* ---------------- Card actions ---------------- */
+const clearReq={status:"available",requesterId:null,requesterName:null,offeredBookId:null};
+const clearOffer={status:"available",forBookId:null};
+
+document.addEventListener("click",async e=>{
+  const go=e.target.closest("[data-goto]");if(go){showTab(go.dataset.goto);return}
+  const btn=e.target.closest("[data-act]");if(!btn)return;
+  const b=byId(btn.dataset.id);if(!b)return;
+  const act=btn.dataset.act;
+  if(act==="request"){if(!needName())openSwap(b);return}
+  if(act==="chat"){openChat(b);return}
+  if(act==="share"){shareBook(b);return}
+  if(act==="edit"){startEdit(b);return}
+  btn.disabled=true;
+  try{
+    if(act==="cancel"||act==="decline"){
+      const u={[b.id]:clearReq}; if(b.offeredBookId&&byId(b.offeredBookId))u[b.offeredBookId]=clearOffer;
+      await api.commit(u,{[b.id]:"requested"}); toast(act==="cancel"?"Request cancelled":"Swap declined");
+    }
+    if(act==="withdraw"){
+      const t=byId(b.forBookId); const u={[b.id]:clearOffer}; if(t)u[t.id]=clearReq;
+      await api.commit(u,{[b.id]:"offered"}); toast("Offer withdrawn");
+    }
+    if(act==="accept"){
+      const o=byId(b.offeredBookId);
+      if(!o){toast("The offered book is no longer listed.");btn.disabled=false;return}
+      const now=Date.now(), due=x=>x.mode==="lend"?now+(Number(x.lendWeeks)||2)*7*DAY:null;
+      await api.commit({
+        [b.id]:{status:b.mode==="give"?"given":"out",swapWithId:o.id,swappedAt:now,dueAt:due(b)},
+        [o.id]:{status:o.mode==="give"?"given":"out",requesterId:b.ownerId,requesterName:b.ownerName,swapWithId:b.id,forBookId:null,swappedAt:now,dueAt:due(o)}
+      },{[b.id]:"requested",[o.id]:"offered"});
+      toast("Swap accepted. Use Chat to agree on a pickup time.");
+    }
+    if(act==="returned"){
+      await api.commit({[b.id]:{status:"available",requesterId:null,requesterName:null,offeredBookId:null,swapWithId:null,dueAt:null}},{[b.id]:"out"});
+      toast("Marked as returned");
+    }
+    if(act==="remove"){
+      if(confirm(`Remove "${b.title}" from the shelf?`)){await api.remove(b.id);toast("Book removed")}else btn.disabled=false;
+    }
+  }catch(err){
+    btn.disabled=false;
+    toast(err.message==="stale"?"This book just changed. Take another look.":"That didn't go through. Check your connection and try again.");
+  }
+});
+
+/* ---------------- Photo ---------------- */
+let photoData=null;
+$("#photo").addEventListener("change",e=>{
+  const f=e.target.files[0];photoData=null;$("#preview").style.display="none";$("#formErr").textContent="";if(!f)return;
+  const img=new Image(),url=URL.createObjectURL(f);
+  img.onload=()=>{
+    const sc=Math.min(1,360/Math.max(img.width,img.height));
+    const c=document.createElement("canvas");c.width=Math.round(img.width*sc);c.height=Math.round(img.height*sc);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    photoData=c.toDataURL("image/jpeg",0.72);$("#preview").src=photoData;$("#preview").style.display="block";URL.revokeObjectURL(url);
+  };
+  img.onerror=()=>{$("#formErr").textContent="That file couldn't be read as an image. Try a JPG or PNG."};
+  img.src=url;
+});
+
+/* ---------------- Add / edit ---------------- */
+function resetForm(){
+  editingId=null;$("#addForm").reset();photoData=null;$("#preview").style.display="none";
+  $("#formTitle").textContent="Add a book";$("#addBtn").textContent="List this book";$("#cancelEdit").hidden=true;$("#formErr").textContent="";
+  const last=store.get("swap-area");if(last)$("#areaInput").value=last;
+  syncLend();
+}
+function startEdit(b){
+  showTab("add"); editingId=b.id; const f=$("#addForm").elements;
+  f.title.value=b.title;f.author.value=b.author;f.genre.value=b.genre;f.condition.value=b.condition;
+  f.mode.value=b.mode;f.lendWeeks.value=String(b.lendWeeks||2);f.area.value=b.area||"";f.note.value=b.note||"";
+  photoData=b.photo||null; if(photoData){$("#preview").src=photoData;$("#preview").style.display="block"}
+  $("#formTitle").textContent="Edit book";$("#addBtn").textContent="Save changes";$("#cancelEdit").hidden=false;syncLend();
+}
+$("#cancelEdit").addEventListener("click",()=>{resetForm();showTab("mine")});
+
+$("#addForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  if(needName())return;
+  const fd=new FormData(e.target),err=$("#formErr");
+  const title=fd.get("title").trim(),author=fd.get("author").trim(),area=fd.get("area").trim();
+  if(!title||!author){err.textContent="Add both a title and an author.";return}
+  if(!api){err.textContent="Still connecting. Try again in a moment.";return}
+  err.textContent="";$("#addBtn").disabled=true;
+  const fields={title,author,genre:fd.get("genre"),condition:fd.get("condition"),mode:fd.get("mode"),
+    lendWeeks:Number(fd.get("lendWeeks"))||2,area,note:fd.get("note").trim(),photo:photoData};
+  try{
+    if(area)store.set("swap-area",area);
+    if(editingId){
+      const cur=byId(editingId);
+      if(!cur||cur.status!=="available"){err.textContent="This book is part of a swap now, so it can't be edited.";return}
+      await api.edit(editingId,fields); toast("Changes saved");
+    }else{
+      await api.add({...fields,ownerId:me,ownerName:myName,status:"available",
+        requesterId:null,requesterName:null,offeredBookId:null,forBookId:null,swapWithId:null,dueAt:null,createdAt:Date.now()});
+      toast(`"${title}" is on the shelf`);
+    }
+    resetForm();showTab("mine");
+  }catch{err.textContent="The book wasn't saved. Check your connection and try again."}
+  finally{$("#addBtn").disabled=false}
+});
+
+/* ---------------- Start ---------------- */
+resetForm();render();
+window.addEventListener("hashchange",jumpToHash);
+(async()=>{
+  try{
+    api=useFirebase?await makeFirebaseApi():makeLocalApi();
+    if(!useFirebase)notice("Demo mode: books are saved on this device only. Add your Firebase settings to share with neighbours.");
+  }catch(e){
+    console.error(e);api=makeLocalApi();
+    notice("Couldn't connect to the shared shelf, so books are saved on this device only. Check the Firebase settings.");
+  }
+  me=api.uid; let jumped=false;
+  api.subscribe(list=>{books=list;render();if(!jumped)jumped=jumpToHash()},()=>notice("Lost connection to the shared shelf. Reload the page to reconnect."));
+  setInterval(render,60000);
+  if(!myName)askName();
+})();
+</script>
+</body>
+</html>
