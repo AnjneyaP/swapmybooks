@@ -59,6 +59,25 @@ header.top{padding:22px 0 8px}
 .wordmark{font-family:var(--display);font-weight:800;font-stretch:78%;font-size:clamp(3rem,15vw,5.6rem);line-height:.82;letter-spacing:-.04em;margin:0}
 .wordmark .sticker{display:inline-block;font-family:var(--body);font-stretch:100%;font-size:.95rem;font-weight:700;letter-spacing:0;vertical-align:top;margin:.45em 0 0 .3em;background:var(--sun);color:var(--on-accent);border:2.5px solid var(--edge);border-radius:999px;padding:3px 10px;transform:rotate(6deg)}
 .tagline{margin:14px 0 0;color:var(--muted);max-width:38ch;font-size:1.02rem}
+.topactions{display:flex;align-items:center;gap:8px;flex:none}
+.bell{position:relative;flex:none;width:44px;height:44px;padding:0;border-radius:50%;background:var(--surface);color:var(--ink);border:2.5px solid var(--edge);box-shadow:3px 3px 0 var(--edge);display:grid;place-items:center}
+.bell svg{width:22px;height:22px}
+.bell .badge{position:absolute;top:-10px;right:-8px}
+.alertcard{background:var(--field);border:2px dashed var(--line);border-radius:16px;padding:12px 14px;display:grid;gap:8px;font-size:.92rem;justify-items:start}
+.alertcard p{margin:0}
+.notiflist{display:grid;gap:8px;max-height:46vh;overflow:auto;padding:2px}
+.nrow{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:10px 12px;min-height:58px}
+.nrow.unread{border-color:var(--edge);background:var(--mine-msg)}
+.nico{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--edge);color:var(--on-accent)}
+.nico svg{width:20px;height:20px}
+.nico.request{background:var(--sun)} .nico.accepted{background:var(--mint)} .nico.declined{background:var(--surface);color:var(--ink)} .nico.chat{background:var(--sky)}
+.nbody{min-width:0;flex:1}
+.nbody b{display:block;font-family:var(--display);font-size:1.02rem;line-height:1.2}
+.nbody span{display:block;font-size:.9rem;color:var(--muted);overflow-wrap:anywhere}
+.ntime{font-size:.78rem;color:var(--muted);flex:none;padding-top:2px}
+.nudge{display:grid;gap:10px;background:var(--surface);border:2.5px solid var(--edge);box-shadow:4px 4px 0 var(--edge);border-radius:18px;padding:14px;margin-bottom:18px}
+.nudge p{margin:0}
+.btn .badge{margin-left:6px;vertical-align:1px}
 .installbar{display:flex;align-items:center;gap:10px;margin-top:14px;background:var(--surface);border:2.5px solid var(--edge);border-radius:16px;padding:8px 8px 8px 10px;box-shadow:3px 3px 0 var(--edge);max-width:480px}
 .installbar img{border-radius:10px;border:2px solid var(--edge);flex:none}
 .installbar span{flex:1;font-weight:700;font-size:.92rem;line-height:1.25}
@@ -67,7 +86,7 @@ header.top{padding:22px 0 8px}
 .iossteps{margin:0;padding-left:22px;display:grid;gap:10px}
 .iossteps li{padding-left:4px}
 .shareicon{display:inline-block;vertical-align:-4px;width:20px;height:20px}
-.hello{background:var(--surface);border:2.5px solid var(--edge);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:.9rem;font-weight:700;white-space:nowrap;box-shadow:3px 3px 0 var(--edge);max-width:46vw;overflow:hidden;text-overflow:ellipsis}
+.hello{background:var(--surface);border:2.5px solid var(--edge);color:var(--ink);border-radius:999px;padding:7px 12px;font-size:.9rem;font-weight:700;white-space:nowrap;box-shadow:3px 3px 0 var(--edge);max-width:34vw;overflow:hidden;text-overflow:ellipsis}
 
 main{padding:14px 0 calc(var(--bar) + 40px + env(safe-area-inset-bottom,0px))}
 
@@ -234,7 +253,10 @@ footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0p
   <div class="wrap">
     <div class="toprow">
       <h1 class="wordmark">book<br>swap<span class="sticker">nearby</span></h1>
-      <button class="hello" id="helloBtn" hidden></button>
+      <div class="topactions">
+        <button class="bell" id="bellBtn" type="button" aria-label="Notifications" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="badge" id="bellBadge" hidden></span></button>
+        <button class="hello" id="helloBtn" hidden></button>
+      </div>
     </div>
     <p class="tagline">Trade the books you've finished for ones you haven't, with people who live near you.</p>
     <div class="installbar" id="installBar" hidden>
@@ -279,6 +301,10 @@ footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0p
   </div>
 
   <div id="tab-mine" hidden>
+    <div class="nudge" id="alertNudge" hidden>
+      <p><strong>Get a heads-up.</strong> Know right away when someone requests your book or sends you a message.</p>
+      <div class="actions"><button class="btn primary small" type="button" id="nudgeOn">Turn on alerts</button><button class="btn ghost small" type="button" id="nudgeX">Not now</button></div>
+    </div>
     <section id="secAnswer" hidden><h2>Swap requests for you</h2><div id="gridAnswer" class="grid"></div></section>
     <section><h2>On your shelf</h2><div id="gridListed" class="grid"></div></section>
     <section><h2>Books you asked for</h2><div id="gridBorrowed" class="grid"></div></section>
@@ -348,6 +374,15 @@ footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0p
   <button role="tab" data-tab="mine" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h3v16H5zM10 4h3v16h-3zM15.5 5.2l2.9-.8 3.6 15-2.9.8z"/></svg>My shelf<span class="badge" id="mineBadge" hidden></span></button>
   <button role="tab" data-tab="admin" aria-selected="false" id="adminTabBtn" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/></svg>Admin<span class="badge" id="adminBadge" hidden></span></button>
 </nav>
+
+<dialog id="notifDlg">
+  <div class="dlg">
+    <h3>Notifications</h3>
+    <div class="notiflist" id="notifList" aria-live="polite"></div>
+    <div class="alertcard" id="alertSetup"></div>
+    <div class="actions"><button class="btn ghost" type="button" id="notifReadAll">Mark all read</button><button class="btn primary" type="button" id="notifClose">Close</button></div>
+  </div>
+</dialog>
 
 <dialog id="iosDlg">
   <div class="dlg">
@@ -523,6 +558,10 @@ async function makeFirebaseApi(){
       return fs.onSnapshot(ref,s=>cb((s.data()||{}).messages||[]),onErr);
     },
     sendMessage(chatId,msg){return fs.updateDoc(fs.doc(db,"chats",chatId),{messages:fs.arrayUnion(msg)})},
+    subscribeMyChats(cb,onErr){
+      const q=fs.query(fs.collection(db,"chats"),fs.where("participants","array-contains",uid));
+      return fs.onSnapshot(q,s=>cb(s.docs.map(d=>({id:d.id,...d.data()}))),onErr);
+    },
     async isAdmin(){try{return (await fs.getDoc(fs.doc(db,"admins",uid))).exists()}catch{return false}},
     async deleteSelf(){try{await auth.currentUser.delete()}catch(e){console.warn("auth delete",e)}},
     async isBlocked(){try{return (await fs.getDoc(fs.doc(db,"blockedUsers",uid))).exists()}catch{return false}},
@@ -551,7 +590,13 @@ function makeLocalApi(){
   const write=a=>{store.set(K,JSON.stringify(a));listener(a)};
   const readC=()=>{try{return JSON.parse(store.get(KC)||"{}")}catch{return {}}};
   const rj=(k,d)=>{try{return JSON.parse(store.get(k)||"null")??d}catch{return d}}, wj=(k,v)=>store.set(k,JSON.stringify(v));
-  let repL=()=>{}, buL=()=>{};
+  let repL=()=>{}, buL=()=>{}, chatsL=()=>{};
+  const listMine=()=>Object.entries(readC()).filter(([id,c])=>(c.participants||[]).includes(uid)).map(([id,c])=>({id,participants:c.participants,messages:c.messages||[]}));
+  // Demo mode also reacts to changes made in another tab, so alerts can be tried out.
+  window.addEventListener("storage",e=>{
+    if(e.key===K)listener(read());
+    if(e.key===KC){chatsL(listMine());const c=readC();if(chatL&&c[chatL.chatId])chatL.cb(c[chatL.chatId].messages)}
+  });
   let uid=store.get("swap-demo-uid"); if(!uid){uid="u"+Math.random().toString(36).slice(2);store.set("swap-demo-uid",uid)}
   return {
     uid,
@@ -566,12 +611,14 @@ function makeLocalApi(){
     },
     async openChat(chatId,participants,cb){
       const c=readC(); c[chatId]=c[chatId]||{participants,messages:[]}; store.set(KC,JSON.stringify(c));
-      chatL={chatId,cb}; cb(c[chatId].messages); return ()=>{chatL=null};
+      chatL={chatId,cb}; cb(c[chatId].messages); chatsL(listMine()); return ()=>{chatL=null};
     },
     async sendMessage(chatId,msg){
       const c=readC(); c[chatId].messages.push(msg); store.set(KC,JSON.stringify(c));
       if(chatL&&chatL.chatId===chatId)chatL.cb(c[chatId].messages);
+      chatsL(listMine());
     },
+    subscribeMyChats(cb){chatsL=cb;cb(listMine())},
     async isAdmin(){return rj("swap-demo-admins",[]).includes(uid)},
     async deleteSelf(){store.set("swap-demo-uid","")},
     async isBlocked(){return rj("swap-demo-blockedusers",[]).some(x=>x.id===uid)},
@@ -592,7 +639,7 @@ function makeLocalApi(){
 }
 
 /* ---------------- UI helpers ---------------- */
-function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),2800)}
+function toast(m,ms=2800){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove("show"),ms)}
 function notice(m){const n=$("#notice");n.hidden=!m;n.textContent=m||""}
 const byId=id=>books.find(b=>b.id===id);
 const nm=handle;
@@ -631,7 +678,7 @@ function actionsFor(b){
     else if(b.status==="requested"&&b.requesterId===me)out.push(B("cancel","Cancel request","ghost"));
   }
   if(inSwap(b)&&b.status!=="given"||inSwap(b)&&b.status==="given"&&Date.now()-(b.swappedAt||0)<14*DAY){
-    out.push(B("chat","Chat with "+esc(handle(partnerOf(b).name,"")),"ghost"));
+    {const cn=chatUnread(b);out.push(B("chat","Chat with "+esc(handle(partnerOf(b).name,""))+(cn?` <span class="badge">${cn}</span>`:""),"ghost"))}
   }
   return out.join("");
 }
@@ -708,6 +755,8 @@ function render(){
   $("#how").hidden=books.some(b=>b.ownerId===me);
   const hb=$("#helloBtn");hb.hidden=!validNick(myName);hb.textContent="@"+myName;hb.setAttribute("aria-label","Your nickname @"+myName+". Tap to change it.");
   renderAdmin();
+  renderBell();
+  renderNudge();
 }
 
 /* ---------------- Tabs & filters ---------------- */
@@ -851,6 +900,7 @@ $("#deleteMe").addEventListener("click",async()=>{
     }
     await api.deleteSelf();
     for(const k of ["swap-name","swap-terms","swap-area"])try{localStorage.removeItem(k)}catch{}
+    try{for(const k of Object.keys(localStorage))if(k.endsWith(":"+me))localStorage.removeItem(k)}catch{}
     $("#nameDlg").close(); alert("Your data has been deleted. You can close the app now.");
     location.reload();
   }catch(e){console.error(e);btn.disabled=false;toast("Couldn't delete everything. Check your connection and try again.")}
@@ -904,19 +954,25 @@ function openSwap(target){
 /* ---------------- Chat ---------------- */
 let chatUnsub=null, chatId=null;
 function renderChat(msgs){
+  if(chatId&&$("#chatDlg").open&&!document.hidden){markRead(chatId,msgs.length);render()}
   const log=$("#chatLog");
   if(!msgs.length){log.innerHTML=`<div class="hint" style="margin:auto;text-align:center">No messages yet. Say hello and suggest a pickup time.</div>`;return}
   log.innerHTML=msgs.slice().sort((a,b)=>a.at-b.at).map(m=>`<div class="msg ${m.from===me?"me":""}"><span class="w">${m.from===me?"You":esc(handle(m.name,""))} &middot; ${new Date(m.at).toLocaleString(undefined,{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"})}</span>${esc(m.text)}</div>`).join("");
   log.scrollTop=log.scrollHeight;
 }
-async function openChat(b){
-  const p=partnerOf(b);
-  chatId=b.id+"_"+b.requesterId;
-  $("#chatTitle").textContent="Chat with "+handle(p.name,"");
+async function openChat(b){return openChatRaw(b.id+"_"+b.requesterId,[b.ownerId,b.requesterId],partnerOf(b).name)}
+async function openChatById(id){
+  const c=chatsState[id]; if(!c)return;
+  const lastOther=[...(c.messages||[])].reverse().find(m=>m.from!==me);
+  return openChatRaw(id,c.participants,lastOther?lastOther.name:"");
+}
+async function openChatRaw(id,participants,partnerName){
+  chatId=id;
+  $("#chatTitle").textContent="Chat with "+handle(partnerName,"");
   $("#chatErr").textContent="";$("#chatLog").innerHTML="";
   $("#chatDlg").showModal();
   try{
-    chatUnsub=await api.openChat(chatId,[b.ownerId,b.requesterId],renderChat,()=>{$("#chatErr").textContent="Chat disconnected. Close and open it again."});
+    chatUnsub=await api.openChat(chatId,participants,renderChat,()=>{$("#chatErr").textContent="Chat disconnected. Close and open it again."});
   }catch(e){console.error(e);$("#chatErr").textContent="Couldn't open the chat. Check your connection and try again."}
   $("#chatInput").focus();
 }
@@ -1041,6 +1097,211 @@ document.addEventListener("click",async e=>{
   }catch(err){console.error(err);btn.disabled=false;toast("That didn't go through. Check your connection and try again.")}
 });
 
+/* ---------------- Notifications ---------------- */
+const BASE_TITLE="Book Swap: trade books nearby";
+const nk=k=>k+":"+me;
+const jget=(k,d)=>{try{const v=JSON.parse(store.get(k));return v==null?d:v}catch{return d}};
+const jset=(k,v)=>store.set(k,JSON.stringify(v));
+let notifs=[], nseen=new Set(), chatsState={}, booksReady=false, chatsReady=false, baselineUntil=0, pendingTarget=null, notifRows=[];
+const prevChatCount={}, cancelling=new Set();
+const baselining=()=>Date.now()<baselineUntil;
+function persistNotifs(){jset(nk("swap-notifs"),notifs.slice(0,40));jset(nk("swap-nseen"),[...nseen].slice(-300))}
+function loadNotifState(){
+  const raw=store.get(nk("swap-nseen"));
+  if(raw===null)baselineUntil=Date.now()+4000;   // brand-new user: don't alert about things that already existed
+  try{nseen=new Set(raw?JSON.parse(raw):[])}catch{nseen=new Set()}
+  notifs=jget(nk("swap-notifs"),[]);
+  persistNotifs();
+}
+const canNotify=()=>"Notification" in window&&"serviceWorker" in navigator;
+const notifPerm=()=>canNotify()?Notification.permission:"unsupported";
+const readN=id=>+(store.get(nk("swap-readn-"+id))||0);
+const markRead=(id,n)=>store.set(nk("swap-readn-"+id),String(Math.max(n,readN(id))));
+const unreadMsgs=c=>(c.messages||[]).slice(readN(c.id)).filter(m=>m.from!==me);
+const chatUnread=b=>{const c=chatsState[b.id+"_"+b.requesterId];return c?unreadMsgs(c).length:0};
+const unreadChatCount=()=>Object.values(chatsState).reduce((n,c)=>n+unreadMsgs(c).length,0);
+const chatIsOpen=id=>chatId===id&&$("#chatDlg").open;
+
+async function systemNotify(title,body,tag,target){
+  if(notifPerm()!=="granted")return false;
+  const opts={body,tag,icon:"icons/icon-192.png",badge:"icons/icon-192.png",data:target||{kind:"mine"},vibrate:[80,40,80]};
+  try{
+    const reg=await Promise.race([navigator.serviceWorker.ready,new Promise(r=>setTimeout(()=>r(null),1500))]);
+    if(reg&&reg.showNotification){await reg.showNotification(title,opts);return true}
+  }catch(e){console.warn("showNotification",e)}
+  try{const n=new Notification(title,{body,tag,icon:opts.icon});n.onclick=()=>{window.focus();openTarget(target)};return true}catch{return false}
+}
+function alertUser(title,text,tag,target){
+  try{if(navigator.vibrate)navigator.vibrate([60,40,60])}catch{}
+  if(document.hidden)systemNotify(title,text,tag,target);   // app in background: phone notification
+  else toast(`${title}: ${text}`,5200);                      // app open: friendly banner
+}
+function addNotif(n,live){
+  if(nseen.has(n.key))return false;
+  nseen.add(n.key);
+  if(baselining())return false;
+  notifs.unshift({id:n.key,type:n.type,title:n.title,text:n.text,at:Date.now(),read:false,target:n.target});
+  notifs=notifs.slice(0,40);
+  if(live)alertUser(n.title,n.text,n.key,n.target);
+  return true;
+}
+function scanBookEvents(){
+  if(!me)return;
+  const live=booksReady, found=[], myReqs=jget(nk("swap-myreqs"),{});
+  for(const b of books){
+    if(b.ownerId===me&&b.status==="requested"&&b.requesterId&&b.requesterId!==me&&!b.blocked){
+      const o=byId(b.offeredBookId);
+      found.push({key:`req:${b.id}:${b.requesterId}`,type:"request",title:"New swap request",
+        text:`${handle(b.requesterName,"")} wants "${b.title}"${o?` and offers "${o.title}"`:""}.`,target:{kind:"mine"}});
+    }else if(b.ownerId!==me&&b.requesterId===me){
+      if(b.status==="requested"){if(!myReqs[b.id])myReqs[b.id]={title:b.title,owner:b.ownerName||"",since:Date.now()}}
+      else if((b.status==="out"||b.status==="given")&&b.swapWithId){
+        found.push({key:`acc:${b.id}:${b.swappedAt||0}`,type:"accepted",title:"Swap accepted!",
+          text:`${handle(b.ownerName,"")} accepted your swap for "${b.title}". Open the chat to arrange pickup.`,target:{kind:"chat",chatId:b.id+"_"+me}});
+        delete myReqs[b.id];
+      }
+    }
+  }
+  // Requests I made that are no longer pending (declined, or the book went away)
+  for(const id of Object.keys(myReqs)){
+    const b=byId(id);
+    if(b&&b.requesterId===me&&["requested","out","given"].includes(b.status))continue;
+    const e=myReqs[id]; delete myReqs[id];
+    if(cancelling.delete(id))continue;   // I cancelled it myself
+    const declined=b&&!b.blocked&&b.status==="available";
+    found.push({key:`dec:${id}:${e.since}`,type:"declined",title:declined?"Swap declined":"Request cancelled",
+      text:declined?`${handle(e.owner,"")} declined your request for "${e.title}".`:`"${e.title}" is no longer available, so your request was cancelled.`,target:{kind:"mine"}});
+  }
+  // If a request goes away and the same person asks again later, that should alert again.
+  const pending=new Set(found.filter(f=>f.type==="request").map(f=>f.key));
+  for(const k of [...nseen])if(k.startsWith("req:")&&!pending.has(k))nseen.delete(k);
+  for(const f of found)addNotif(f,live);
+  jset(nk("swap-myreqs"),myReqs); persistNotifs();
+}
+function onChats(list){
+  const live=chatsReady, next={};
+  for(const c of list)next[c.id]={...c,messages:c.messages||[]};
+  for(const c of Object.values(next)){
+    const n=c.messages.length, prev=prevChatCount[c.id]??0;
+    if(baselining()&&store.get(nk("swap-readn-"+c.id))===null)markRead(c.id,n);
+    if(live){
+      const fresh=c.messages.slice(prev).filter(m=>m.from!==me);
+      if(fresh.length){
+        if(chatIsOpen(c.id)&&!document.hidden)markRead(c.id,n);
+        else{
+          const last=fresh[fresh.length-1];
+          alertUser("New message from "+handle(last.name,""),(fresh.length>1?`${fresh.length} new messages. `:"")+String(last.text||"").slice(0,80),"chat-"+c.id,{kind:"chat",chatId:c.id});
+        }
+      }
+    }
+    prevChatCount[c.id]=n;
+  }
+  chatsState=next; chatsReady=true; render(); tryPendingTarget();
+}
+
+/* Where a notification takes you */
+function openTarget(t){
+  if(!t)return;
+  if(t.kind==="chat"&&t.chatId){
+    if(chatsState[t.chatId]){openChatById(t.chatId);return}
+    const b=byId(String(t.chatId).split("_")[0]);
+    if(b&&inSwap(b)){openChat(b);return}
+  }
+  showTab("mine");
+}
+function tryPendingTarget(){
+  const t=pendingTarget; if(!t||!booksReady)return;
+  if(t.kind==="chat"&&!chatsReady)return;
+  pendingTarget=null;
+  try{history.replaceState(null,"",location.pathname+location.search)}catch{}
+  openTarget(t);
+}
+function readNotifHash(){
+  const m=location.hash.match(/^#n-(mine|chat-(.+))$/); if(!m)return;
+  pendingTarget=m[1]==="mine"?{kind:"mine"}:{kind:"chat",chatId:decodeURIComponent(m[2])};
+  tryPendingTarget();
+}
+navigator.serviceWorker?.addEventListener("message",e=>{
+  if(e.data&&e.data.type==="notif-click"){pendingTarget=e.data.data||{kind:"mine"};tryPendingTarget()}
+});
+document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden&&chatId&&$("#chatDlg").open&&chatsState[chatId])markRead(chatId,chatsState[chatId].messages.length);
+  render();
+});
+
+/* The bell, the inbox and the "turn on alerts" prompts */
+function renderBell(){
+  const bb=$("#bellBtn"); bb.hidden=!validNick(myName);
+  const n=notifs.filter(x=>!x.read).length+unreadChatCount();
+  const bd=$("#bellBadge"); bd.hidden=!n; bd.textContent=n>9?"9+":String(n);
+  bb.setAttribute("aria-label",n?`Notifications, ${n} new`:"Notifications");
+  document.title=(n?`(${n}) `:"")+BASE_TITLE;
+  try{
+    if(navigator.setAppBadge){const r=n?navigator.setAppBadge(n):navigator.clearAppBadge();if(r&&r.catch)r.catch(()=>{})}
+  }catch{}
+}
+function renderNudge(){
+  const el=$("#alertNudge"); if(!el)return;
+  el.hidden=!(notifPerm()==="default"&&!store.get(nk("swap-nudge-x"))&&books.some(b=>b.ownerId===me));
+}
+const NI=d=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+const NICON={request:NI('<path d="M7 7h11l-3-3M17 17H6l3 3"/>'),accepted:NI('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),declined:NI('<path d="M6 6l12 12M18 6L6 18"/>'),chat:NI('<path d="M4 5h16v11H9l-5 4z"/>')};
+const timeAgo=t=>{const s=Math.max(0,(Date.now()-t)/1000);if(s<60)return"just now";if(s<3600)return Math.floor(s/60)+" min ago";if(s<86400)return Math.floor(s/3600)+" h ago";return Math.floor(s/86400)+" d ago"};
+function alertSetupHtml(){
+  const p=notifPerm();
+  if(p==="granted")return `<p class="hint"><strong>Alerts are on</strong> while Book Swap is open or in the background. If it's fully closed, you'll catch up here when you open it.</p><button type="button" class="linkbtn" id="testAlert">Send me a test alert</button>`;
+  if(p==="denied")return `<p><strong>Alerts are blocked.</strong> To turn them on, allow notifications for this site in your browser or phone settings.</p>`;
+  if(p==="default")return `<p><strong>Get alerts on this phone.</strong> Hear about swap requests and messages right away.</p><button type="button" class="btn primary small" id="alertOn">Turn on alerts</button><p class="hint">Alerts arrive while the app is open or running in the background. If it's fully closed, you'll catch up here when you open it.</p>`;
+  return isIOS&&!isStandalone()
+    ?`<p><strong>Alerts on iPhone</strong> work after you add Book Swap to your home screen. Use the Install button on the home page, then open the app from there.</p>`
+    :`<p>This browser can't show alerts. You'll still see everything in this list when you open the app.</p>`;
+}
+function renderNotifDlg(){
+  $("#alertSetup").innerHTML=alertSetupHtml();
+  const rows=[];
+  for(const c of Object.values(chatsState)){
+    const u=unreadMsgs(c); if(!u.length)continue;
+    const last=u[u.length-1];
+    rows.push({type:"chat",title:`${handle(last.name,"")} sent you ${u.length>1?u.length+" messages":"a message"}`,text:String(last.text||"").slice(0,90),at:last.at||Date.now(),unread:true,target:{kind:"chat",chatId:c.id}});
+  }
+  rows.sort((a,b)=>b.at-a.at);
+  for(const n of notifs.slice(0,20))rows.push({...n,unread:!n.read,nid:n.id});
+  notifRows=rows;
+  $("#notifList").innerHTML=rows.length?rows.map((r,i)=>`<button type="button" class="nrow${r.unread?" unread":""}" data-ni="${i}"><span class="nico ${r.type}">${NICON[r.type]||""}</span><span class="nbody"><b>${esc(r.title)}</b><span>${esc(r.text)}</span></span><span class="ntime">${timeAgo(r.at)}</span></button>`).join(""):`<p class="hint" style="text-align:center;margin:8px 0">Nothing yet. Swap requests and messages will show up here.</p>`;
+}
+async function enableAlerts(){
+  if(notifPerm()!=="default"){renderNotifDlg();return}
+  let r="default";
+  try{r=await Notification.requestPermission()}catch{}
+  if(r==="granted"){toast("Alerts are on");systemNotify("Alerts are on","You'll be told when someone requests a swap or messages you.","welcome",{kind:"mine"})}
+  else if(r==="denied")toast("Alerts are blocked. You can allow them in your browser settings.",4200);
+  renderNudge(); if($("#notifDlg").open)renderNotifDlg();
+}
+function markAllRead(){notifs.forEach(n=>n.read=true);persistNotifs()}
+$("#bellBtn").addEventListener("click",()=>{renderNotifDlg();$("#notifDlg").showModal()});
+$("#notifClose").addEventListener("click",()=>$("#notifDlg").close());
+$("#notifDlg").addEventListener("close",()=>{markAllRead();render()});
+$("#notifReadAll").addEventListener("click",()=>{
+  markAllRead();
+  for(const c of Object.values(chatsState))markRead(c.id,(c.messages||[]).length);
+  renderNotifDlg();render();
+});
+$("#notifList").addEventListener("click",e=>{
+  const r=e.target.closest("[data-ni]"); if(!r)return;
+  const row=notifRows[+r.dataset.ni]; if(!row)return;
+  if(row.nid){const n=notifs.find(x=>x.id===row.nid);if(n)n.read=true;persistNotifs()}
+  $("#notifDlg").close(); openTarget(row.target);
+});
+$("#alertSetup").addEventListener("click",async e=>{
+  if(e.target.closest("#alertOn")){await enableAlerts();return}
+  if(e.target.closest("#testAlert")){
+    const ok=await systemNotify("Test alert","This is how Book Swap alerts look.","test",{kind:"mine"});
+    toast(ok?"Test alert sent":"Couldn't show the alert. Check your phone's notification settings.",4200);
+  }
+});
+$("#nudgeOn").addEventListener("click",enableAlerts);
+$("#nudgeX").addEventListener("click",()=>{store.set(nk("swap-nudge-x"),"1");renderNudge()});
+
 /* ---------------- Install app ---------------- */
 let installEvt=null;
 const isStandalone=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
@@ -1078,11 +1339,12 @@ document.addEventListener("click",async e=>{
   btn.disabled=true;
   try{
     if(act==="cancel"||act==="decline"){
+      if(act==="cancel")cancelling.add(b.id);
       const u={[b.id]:clearReq}; if(b.offeredBookId&&byId(b.offeredBookId))u[b.offeredBookId]=clearOffer;
       await api.commit(u,{[b.id]:"requested"}); toast(act==="cancel"?"Request cancelled":"Swap declined");
     }
     if(act==="withdraw"){
-      const t=byId(b.forBookId); const u={[b.id]:clearOffer}; if(t)u[t.id]=clearReq;
+      const t=byId(b.forBookId); const u={[b.id]:clearOffer}; if(t){u[t.id]=clearReq;cancelling.add(t.id)}
       await api.commit(u,{[b.id]:"offered"}); toast("Offer withdrawn");
     }
     if(act==="accept"){
@@ -1285,7 +1547,7 @@ $("#addForm").addEventListener("submit",async e=>{
 
 /* ---------------- Start ---------------- */
 resetForm();render();
-window.addEventListener("hashchange",jumpToHash);
+window.addEventListener("hashchange",()=>{jumpToHash();readNotifHash()});
 (async()=>{
   try{
     api=useFirebase?await makeFirebaseApi():makeLocalApi();
@@ -1294,7 +1556,7 @@ window.addEventListener("hashchange",jumpToHash);
     console.error(e);api=makeLocalApi();
     notice("Couldn't connect to the shared shelf, so books are saved on this device only. Check the Firebase settings.");
   }
-  me=api.uid; let jumped=false;
+  me=api.uid; let jumped=false; loadNotifState(); readNotifHash();
   $("#myId").textContent=me; $("#myIdRow").hidden=false; $("#deleteRow").hidden=false;
   [isAdmin,amBlocked]=await Promise.all([api.isAdmin(),api.isBlocked()]);
   if(amBlocked)notice("Your account has been blocked by the admin for breaking the Terms of use. You can still browse, but you can't list or request books.");
@@ -1303,7 +1565,8 @@ window.addEventListener("hashchange",jumpToHash);
     api.subscribeReports(r=>{reports=r;render()},()=>toast("Couldn't load reports. Check the admin setup."));
     api.subscribeBlockedUsers(u=>{blockedUsers=u;render()},()=>{});
   }
-  api.subscribe(list=>{books=list;render();if(!jumped)jumped=jumpToHash()},()=>notice("Lost connection to the shared shelf. Reload the page to reconnect."));
+  api.subscribe(list=>{books=list;scanBookEvents();booksReady=true;render();tryPendingTarget();if(!jumped)jumped=jumpToHash()},()=>notice("Lost connection to the shared shelf. Reload the page to reconnect."));
+  api.subscribeMyChats(onChats,()=>{});
   setInterval(render,60000);
   restoreNear();
   if("serviceWorker" in navigator&&location.protocol==="https:"||location.hostname==="localhost")navigator.serviceWorker?.register("sw.js").catch(e=>console.warn("SW",e));
