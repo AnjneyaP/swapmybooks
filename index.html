@@ -98,6 +98,12 @@ nav.tabs .badge{position:absolute;top:0;left:calc(50% + 6px)}
 .controls{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:22px}
 .controls input,.controls select{background:var(--surface);border:2.5px solid var(--edge);border-radius:999px;padding:11px 16px;min-height:50px;min-width:0;font-weight:600}
 .controls input{flex:1 1 100%;font-weight:500}
+.chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:var(--surface);border:2.5px solid var(--edge);border-radius:999px;padding:10px 16px;min-height:50px;font-weight:700;color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--sky);color:var(--on-accent)}
+.chip:disabled{opacity:.6}
+.nearhint{margin:-10px 0 16px}
+.dist{display:flex;align-items:center;gap:4px;font-size:.9rem;font-weight:800;color:var(--grape)}
+@media (prefers-color-scheme:dark){.dist{color:#B79CFF}}
 .chips{display:flex;gap:8px;overflow-x:auto;flex:1 1 100%;padding:2px 2px 4px;margin:-2px;scrollbar-width:none}
 .chips::-webkit-scrollbar{display:none}
 .controls select{flex:0 0 auto;appearance:none;-webkit-appearance:none;padding-right:34px;background-image:linear-gradient(45deg,transparent 50%,currentColor 50%),linear-gradient(135deg,currentColor 50%,transparent 50%);background-position:calc(100% - 20px) 52%,calc(100% - 14px) 52%;background-size:6px 6px;background-repeat:no-repeat}
@@ -253,6 +259,13 @@ footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0p
     <div class="controls">
       <input id="q" type="search" placeholder="Search title or author" aria-label="Search by title or author">
       <div class="chips">
+        <button type="button" class="chip" id="nearBtn" aria-pressed="false"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span id="nearLabel">Near me</span></button>
+        <select id="fDist" aria-label="Distance" hidden>
+          <option value="0">Any distance</option>
+          <option value="1">Within 1 km</option>
+          <option value="3">Within 3 km</option>
+          <option value="10">Within 10 km</option>
+        </select>
         <select id="fStatus" aria-label="Availability">
           <option value="available">Up for swap</option>
           <option value="all">All books</option>
@@ -261,6 +274,7 @@ footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0p
         <select id="fArea" aria-label="Area"></select>
       </div>
     </div>
+    <p class="hint nearhint" id="nearHint" hidden>Closest books first. Distances are approximate (about 1 km). Books without a location are at the end.</p>
     <div id="grid" class="grid"></div>
   </div>
 
@@ -305,6 +319,7 @@ footer.foot{padding:4px 0 calc(var(--bar) + 36px + env(safe-area-inset-bottom,0p
         <input type="text" name="area" id="areaInput" maxlength="40" list="areaList">
         <datalist id="areaList"></datalist>
       </label>
+      <label class="agree" id="geoRow"><input type="checkbox" name="useGeo" id="geoBox" checked><span><strong>Show how far away this book is.</strong> Saves your current location rounded to about 1 km, so people see "about 2 km away". Never your exact spot.</span></label>
       <label class="f">Pickup spot <span class="hint">e.g. "Main gate, evenings". Don't add your flat number.</span>
         <textarea name="note" maxlength="240"></textarea>
       </label>
@@ -641,6 +656,7 @@ function card(b,withId=false){
     <div class="ttl">${esc(b.title)}</div>
     <div class="meta">${esc(b.author)}, ${esc(b.genre)}, ${esc(b.condition).toLowerCase()} condition${lendInfo}</div>
     <div class="meta">Shared by ${esc(nm(b.ownerName,b.ownerId))}${b.area?" in "+esc(b.area):""}</div>
+    ${distHtml(b)}
     ${b.note?`<div class="meta">Pickup: ${esc(b.note)}</div>`:""}
     ${swapInfo(b)}
     <div class="status ${b.status}">${esc(statusText(b))}</div>
@@ -666,9 +682,11 @@ function render(){
   refreshAreas();
   const q=$("#q").value.trim().toLowerCase(), g=$("#fGenre").value, s=$("#fStatus").value, ar=$("#fArea").value;
   const sorted=[...books].sort((a,b)=>(b.createdAt||0)-(a.createdAt||0));
-  const shown=sorted.filter(b=>!isHidden(b)&&(!q||(b.title+" "+b.author).toLowerCase().includes(q))&&(g==="all"||b.genre===g)&&(ar==="all"||areaKey(b.area)===ar)&&(s==="all"?b.status!=="given":b.status==="available"));
+  const near=nearOn&&myPos, maxKm=near?Number($("#fDist").value):0;
+  const byNear=near?[...sorted].sort((a,b)=>{const da=kmTo(a),db=kmTo(b);if(da==null&&db==null)return 0;if(da==null)return 1;if(db==null)return -1;return da-db}):sorted;
+  const shown=byNear.filter(b=>!isHidden(b)&&(!maxKm||(kmTo(b)!=null&&kmTo(b)<=maxKm))&&(!q||(b.title+" "+b.author).toLowerCase().includes(q))&&(g==="all"||b.genre===g)&&(ar==="all"||areaKey(b.area)===ar)&&(s==="all"?b.status!=="given":b.status==="available"));
   $("#grid").innerHTML=shown.length?shown.map(b=>card(b,true)).join(""):
-    books.length?empty("No matching books","Try another search, or choose \"All books\" and \"All areas\".",false):empty("Nothing here yet","Be the first to list a book. You'll need one to swap anyway.",true);
+    books.length?(maxKm?empty("Nothing that close yet",`No books within ${maxKm} km match. Try a bigger distance or "Any distance".`,false):empty("No matching books","Try another search, or choose \"All books\" and \"All areas\".",false)):empty("Nothing here yet","Be the first to list a book. You'll need one to swap anyway.",true);
 
   const answer=sorted.filter(b=>b.ownerId===me&&b.status==="requested");
   const overdueMine=sorted.filter(b=>b.requesterId===me&&b.ownerId!==me&&b.status==="out"&&b.dueAt&&b.dueAt<Date.now());
@@ -702,7 +720,57 @@ function showTab(n){
 document.querySelectorAll("nav.tabs button").forEach(b=>b.addEventListener("click",()=>showTab(b.dataset.tab)));
 $("#fGenre").innerHTML=`<option value="all">All genres</option>`+GENRES.map(g=>`<option>${g}</option>`).join("");
 $("#genreSel").innerHTML=GENRES.map(g=>`<option>${g}</option>`).join("");
-["#q","#fGenre","#fStatus","#fArea"].forEach(s=>$(s).addEventListener("input",render));
+["#q","#fGenre","#fStatus","#fArea","#fDist"].forEach(s=>$(s).addEventListener("input",render));
+
+/* ---------------- Location (approximate, privacy-first) ---------------- */
+// Book locations are rounded to 2 decimals (about 1 km). The viewer's own position stays in memory on this device only.
+let nearOn=false, myPos=null;
+const roundGeo=v=>Math.round(v*100)/100;
+function kmBetween(a,b){
+  const R=6371,r=x=>x*Math.PI/180,dLat=r(b.lat-a.lat),dLng=r(b.lng-a.lng);
+  const h=Math.sin(dLat/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(h));
+}
+const validGeo=g=>g&&typeof g.lat==="number"&&typeof g.lng==="number"&&Math.abs(g.lat)<=90&&Math.abs(g.lng)<=180;
+function kmTo(b){return nearOn&&myPos&&validGeo(b.geo)?kmBetween(myPos,b.geo):null}
+function distHtml(b){
+  const d=kmTo(b); if(d==null||b.ownerId===me)return "";
+  const t=d<1?"Less than 1 km away":`About ${Math.round(d)} km away`;
+  return `<div class="dist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>${t}</div>`;
+}
+function getPosition(){
+  return new Promise((res,rej)=>{
+    if(!("geolocation" in navigator))return rej({code:2});
+    navigator.geolocation.getCurrentPosition(p=>res({lat:p.coords.latitude,lng:p.coords.longitude}),rej,{enableHighAccuracy:false,timeout:12000,maximumAge:10*60*1000});
+  });
+}
+function geoErrorText(e){
+  return e&&e.code===1?"Location is blocked. Allow location for this site in your browser settings, then try again."
+    :e&&e.code===3?"Finding your location took too long. Check that location is turned on, then try again."
+    :"Couldn't get your location. Check that location is turned on, then try again.";
+}
+function setNear(on){
+  nearOn=on; const b=$("#nearBtn");
+  b.setAttribute("aria-pressed",String(on)); $("#nearLabel").textContent="Near me";
+  $("#fDist").hidden=!on; $("#nearHint").hidden=!on; if(!on)$("#fDist").value="0";
+  store.set("swap-near",on?"on":""); render();
+}
+$("#nearBtn").addEventListener("click",async()=>{
+  if(nearOn){setNear(false);return}
+  const b=$("#nearBtn"); b.disabled=true; $("#nearLabel").textContent="Finding you…";
+  try{myPos=await getPosition();setNear(true);toast("Showing the closest books first")}
+  catch(e){$("#nearLabel").textContent="Near me";toast(geoErrorText(e))}
+  finally{b.disabled=false}
+});
+async function restoreNear(){
+  // Turn "Near me" back on only if the person used it before and already allowed location.
+  if(store.get("swap-near")!=="on")return;
+  try{
+    const st=navigator.permissions?await navigator.permissions.query({name:"geolocation"}):null;
+    if(!st||st.state!=="granted")return;
+    myPos=await getPosition(); setNear(true);
+  }catch{}
+}
 const syncLend=()=>{$("#lendRow").hidden=$("#addForm").elements.mode.value!=="lend"};
 document.querySelectorAll("input[name=mode]").forEach(r=>r.addEventListener("change",syncLend));
 
@@ -731,7 +799,7 @@ const TERMS_HTML=`
 <h4>5. Staying safe</h4>
 <p>Meet in common, well-lit places such as your building's gate or lobby. Don't share sensitive details like your bank information. Children should swap with a parent or guardian present.</p>
 <h4>6. Your information</h4>
-<p>Your nickname, area, pickup spot and book listings can be seen by everyone using the app. Use a nickname, not your real name. Chat messages can only be seen by the two people in that swap. Information is stored on Google Firebase. Don't post your full home address or phone number in a listing; share them in a private chat only if you choose to.</p>
+<p>Your nickname, area, pickup spot and book listings can be seen by everyone using the app. Use a nickname, not your real name. If you choose to show distance on a listing, its location is saved rounded to about 1 km, and others only see an approximate distance such as "about 2 km away". When you use "Near me", your location stays on your phone and is never uploaded. Chat messages can only be seen by the two people in that swap. Information is stored on Google Firebase. Don't post your full home address or phone number in a listing; share them in a private chat only if you choose to.</p>
 <h4>7. Removing content</h4>
 <p>The organisers may remove listings or block anyone who breaks these terms, without notice.</p>
 <h4>8. No guarantee</h4>
@@ -1173,7 +1241,7 @@ function startEdit(b){
   f.title.value=b.title;f.author.value=b.author;f.genre.value=b.genre;f.condition.value=b.condition;
   f.mode.value=b.mode;f.lendWeeks.value=String(b.lendWeeks||2);f.area.value=b.area||"";f.note.value=b.note||"";
   photoData=safeImg(b.photo)||null; if(photoData){$("#preview").src=photoData;$("#preview").style.display="block"}
-  $("#isbnField").value=b.isbn||""; $("#scanBox").hidden=true;
+  $("#isbnField").value=b.isbn||""; $("#scanBox").hidden=true; $("#geoBox").checked=validGeo(b.geo);
   $("#formTitle").textContent="Edit book";$("#addBtn").textContent="Save changes";$("#cancelEdit").hidden=false;syncLend();
 }
 $("#cancelEdit").addEventListener("click",()=>{resetForm();showTab("mine")});
@@ -1189,16 +1257,26 @@ $("#addForm").addEventListener("submit",async e=>{
   err.textContent="";$("#addBtn").disabled=true;
   const fields={title,author,genre:fd.get("genre"),condition:fd.get("condition"),mode:fd.get("mode"),
     lendWeeks:Number(fd.get("lendWeeks"))||2,area,note:fd.get("note").trim(),photo:photoData,isbn:fd.get("isbn")||null};
+  let geoNote="";
+  const cur0=editingId?byId(editingId):null;
+  if(!$("#geoBox").checked)fields.geo=null;
+  else if(cur0&&validGeo(cur0.geo))fields.geo=cur0.geo;
+  else{
+    $("#addBtn").textContent="Getting your location…";
+    try{const g=await getPosition();fields.geo={lat:roundGeo(g.lat),lng:roundGeo(g.lng)}}
+    catch(e){fields.geo=null;geoNote=" (saved without distance: "+(e&&e.code===1?"location is blocked":"location unavailable")+")"}
+    $("#addBtn").textContent=editingId?"Save changes":"List this book";
+  }
   try{
     if(area)store.set("swap-area",area);
     if(editingId){
       const cur=byId(editingId);
       if(!cur||cur.status!=="available"){err.textContent="This book is part of a swap now, so it can't be edited.";return}
-      await api.edit(editingId,fields); toast("Changes saved");
+      await api.edit(editingId,fields); toast("Changes saved"+geoNote);
     }else{
       await api.add({...fields,ownerId:me,ownerName:myName,status:"available",
         requesterId:null,requesterName:null,offeredBookId:null,forBookId:null,swapWithId:null,dueAt:null,createdAt:Date.now()});
-      toast(`"${title}" is on the shelf`);
+      toast(`"${title}" is on the shelf`+geoNote);
     }
     resetForm();showTab("mine");
   }catch{err.textContent="The book wasn't saved. Check your connection and try again."}
@@ -1227,6 +1305,7 @@ window.addEventListener("hashchange",jumpToHash);
   }
   api.subscribe(list=>{books=list;render();if(!jumped)jumped=jumpToHash()},()=>notice("Lost connection to the shared shelf. Reload the page to reconnect."));
   setInterval(render,60000);
+  restoreNear();
   if("serviceWorker" in navigator&&location.protocol==="https:"||location.hostname==="localhost")navigator.serviceWorker?.register("sw.js").catch(e=>console.warn("SW",e));
   if(!validNick(myName)||!termsOk())askName();
 })();
